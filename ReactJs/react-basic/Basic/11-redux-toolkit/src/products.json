@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "productName": "sample-1",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 250
+  },
+  {
+    "id": 2,
+    "productName": "sample-2",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 150
+  },
+  {
+    "id": 3,
+    "productName": "sample-3",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 200
+  },
+  {
+    "id": 4,
+    "productName": "sample-4",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 220
+  },
+  {
+    "id": 5,
+    "productName": "sample-5",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 50
+  },
+  {
+    "id": 6,
+    "productName": "sample-6",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 210
+  },
+  {
+    "id": 7,
+    "productName": "sample-7",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 250
+  },
+  {
+    "id": 8,
+    "productName": "sample-8",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 350
+  },
+  {
+    "id": 9,
+    "productName": "sample-9",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 320
+  },
+  {
+    "id": 10,
+    "productName": "sample-10",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 250
+  },
+  {
+    "id": 11,
+    "productName": "sample-11",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 250
+  },
+  {
+    "id": 12,
+    "productName": "sample-12",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 200
+  },
+  {
+    "id": 13,
+    "productName": "sample-13",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 230
+  },
+  {
+    "id": 14,
+    "productName": "sample-14",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 90
+  },
+  {
+    "id": 15,
+    "productName": "sample-15",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 150
+  },
+  {
+    "id": 16,
+    "productName": "sample-16",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 180
+  },
+  {
+    "id": 17,
+    "productName": "sample-17",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 20
+  },
+  {
+    "id": 18,
+    "productName": "sample-18",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 250
+  },
+  {
+    "id": 19,
+    "productName": "sample-19",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 290
+  },
+  {
+    "id": 20,
+    "productName": "sample-20",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 250
+  },
+  {
+    "id": 21,
+    "productName": "sample-21",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 120
+  },
+  {
+    "id": 22,
+    "productName": "sample-22",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 250
+  },
+  {
+    "id": 23,
+    "productName": "sample-23",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 150
+  },
+  {
+    "id": 24,
+    "productName": "sample-24",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 100
+  },
+  {
+    "id": 25,
+    "productName": "sample-25",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 70
+  },
+  {
+    "id": 26,
+    "productName": "sample-26",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 300
+  },
+  {
+    "id": 27,
+    "productName": "sample-27",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 190
+  },
+  {
+    "id": 28,
+    "productName": "sample-28",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 250
+  },
+  {
+    "id": 29,
+    "productName": "sample-29",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 180
+  },
+  {
+    "id": 30,
+    "productName": "sample-30",
+    "image": "https://dummyimage.com/112x100.png/5fa2dd/ffffff",
+    "price": 100
+  }
+]
