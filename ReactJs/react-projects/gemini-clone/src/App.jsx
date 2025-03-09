@@ -4,20 +4,75 @@ import { BiPlanet } from "react-icons/bi";
 import { FaPython } from "react-icons/fa";
 import { TbMessageChatbot } from "react-icons/tb";
 import { useState } from "react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function App() {
   const [message, setMessage] = useState("");
-  const [isResponse, setReponse] = useState(true);
+  const [isResponse, setIsResponse] = useState(false);
+  const [messages, setMessages] = useState([]);
 
-  const handle = () => {
-    setReponse("");
+  const hitRequest = () => {
+    if (message.trim()) {
+      generateResponse(message);
+    } else {
+      alert("You must write something ...");
+    }
+  };
+
+  const generateResponse = async (msg) => {
+    const genAI = new GoogleGenerativeAI(
+      "AIzaSyAgr9zY7tcFT-K1tbcdfTCEXi9GcgkkJn8"
+    );
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    try {
+      const result = await model.generateContent(msg);
+      const botResponse = result.response.text();
+
+      const newMessages = [
+        ...messages,
+        { type: "userMsg", text: msg },
+        { type: "responseMsg", text: botResponse },
+      ];
+
+      setMessages(newMessages);
+      setIsResponse(true);
+      setMessage("");
+      console.log(botResponse);
+    } catch (error) {
+      console.error("Error fetching response:", error);
+    }
+  };
+
+  const startNewChat = () => {
+    setMessages([]); // Clear previous messages
+    setIsResponse(false); // Reset chat view
   };
 
   return (
     <>
       <div className="body w-screen min-h-screen overflow-x-hidden bg-[#0e0e0e] text-white">
         {isResponse ? (
-          <div className="h-[80vh]"></div>
+          <div className="h-[80vh]">
+            <div className="header flex items-center justify-between w-[100vw] px-60">
+              <h2 className="text-2xl">G-Assistant</h2>
+              <button
+                id="chatBtn"
+                onClick={startNewChat}
+                className="bg-[#181818] text-sm px-5 py-3 rounded-full cursor-pointer hover:bg-[#282828]"
+              >
+                New Chat
+              </button>
+            </div>
+
+            <div className="messages p-4">
+              {messages.map((msg, index) => (
+                <div key={index} className={msg.type}>
+                  {msg.text}
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
           <div className="middle h-[80vh] flex items-center flex-col justify-center w-[80vw] m-auto">
             <h1 className="text-4xl font-semibold">G-Assistant</h1>
@@ -58,21 +113,26 @@ function App() {
           </div>
         )}
 
-        <div className="bottom m-auto flex flex-col items-center gap-5 w-[80%]">
-          <div className="input-box flex items-center relative w-[80%]  bg-[#181818] rounded-4xl overflow-hidden">
+        <div className="bottom absolute bottom-0 py-3 max-h-[20vh] bg-[#0e0e0e] m-auto flex flex-col items-center gap-5 w-[80%]">
+          <div className="input-box flex items-center relative w-[80%] bg-[#181818] rounded-4xl overflow-hidden">
             <input
-              onChange={(e) => {
-                setMessage(e.target.value);
+              value={message}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  hitRequest();
+                }
               }}
-              className="p-4 bg-transparent flex-1 outline-none border-none"
+              onChange={(e) => setMessage(e.target.value)}
+              className="px-6 py-4 bg-transparent flex-1 outline-none border-none"
               type="text"
               placeholder="Write your message here..."
               id="messageBox"
             />
-            {message == "" ? (
-              ""
-            ) : (
-              <i className="absolute right-0 text-blue-500 h-full p-4 flex justify-center items-center text-xl cursor-pointer transition-all duration-300">
+            {message && (
+              <i
+                onClick={hitRequest}
+                className="absolute right-0 text-blue-500 h-full p-4 flex justify-center items-center text-xl cursor-pointer transition-all duration-300"
+              >
                 <IoSend />
               </i>
             )}

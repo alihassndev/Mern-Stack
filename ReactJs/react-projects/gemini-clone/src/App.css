@@ -1,0 +1,35 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: auto;
+    padding-bottom: 25vh;
+  }
+  
+  .userMsg {
+    margin-top: 10px;
+    background-color: #374151;
+    color: white;
+    align-self: flex-end;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+  }
+  
+  .responseMsg {
+    background-color: #2563eb;
+    color: white;
+    align-self: flex-start;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 70%;
+    margin-top: 10px;
+  }
+  
