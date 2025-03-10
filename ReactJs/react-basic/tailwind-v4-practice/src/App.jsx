@@ -1,35 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="cards min-h-screen w-full flex justify-center items-center bg-violet-200 border-violet-500  dark:text-white">
+        {/* here text-8xl does not work so i make it important to overwrite the tailwind v-4 typography */}
+        <h1 className="!text-5xl font-mono">Hello There</h1>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="bg-cyan-200 min-h-screen border-2 w-full border-violet-500 flex justify-center items-center rounded-md sticky top-0">
+        {/* here text-8xl does not work so i make it important to overwrite the tailwind v-4 typography */}
+        <h1 className="!text-5xl font-mono">Hello Ali</h1>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div className="bg-blue-200 min-h-screen border-2 w-full border-violet-500 flex justify-center items-center rounded-md sticky top-0">
+        {/* here text-8xl does not work so i make it important to overwrite the tailwind v-4 typography */}
+        <h1 className="!text-5xl font-mono">Hello Hassan</h1>
+      </div>
+
+      {/* Accent -> use just before any property like to change the select radio color */}
+      {/* Fluid text, File, Highlight, less javascript */}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
