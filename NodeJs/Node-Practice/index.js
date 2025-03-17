@@ -1,8 +1,5 @@
-console.log("This is nodeJS ...");
-console.log(`This is start of NodeJS !`);
-console.log("This is Ali ...");
+console.log("Welcome to NodeJS");
+console.log("This is first Tutorial");
 
-// How to programmtically exit
-
-// process.exit(1);
-// process.exitCode = 1;
+// process.exit(0)
+// process.exitCode = 1
