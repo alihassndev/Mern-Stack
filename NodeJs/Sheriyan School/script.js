@@ -51,10 +51,40 @@
 // ==============================
 // Objects
 // ==============================
-let obj = {
-  name: "ali",
-  age: 22,
-  address: "Sialkot",
-};
+// let obj = {
+//   name: "ali",
+//   age: 22,
+//   address: "Sialkot",
+// };
 
-console.log(obj);
+// // this would freez the value (means we do not change the values)
+// Object.freeze(obj);
+// obj.age = 20;
+
+// // console.log(obj["age"]);
+// console.log(obj.age);
+
+// ==============================
+// functions
+// ==============================
+// function call(a, s, d) {}
+// // Function length means number of parameters
+// console.log(call.length);
+// function call() {
+//   return function () {
+//     console.log("Inner function");
+//   };
+// }
+// console.log(call());
+
+// ==============================
+// Async
+// ==============================
+
+async function test() {
+  let blob = await fetch(`https://randomuser.me/api/`);
+  let result = await blob.json();
+  console.log(result);
+}
+
+test();
