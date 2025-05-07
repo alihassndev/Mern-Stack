@@ -81,10 +81,10 @@
 // Async
 // ==============================
 
-async function test() {
-  let blob = await fetch(`https://randomuser.me/api/`);
-  let result = await blob.json();
-  console.log(result);
-}
+// async function test() {
+//   let blob = await fetch(`https://randomuser.me/api/`);
+//   let result = await blob.json();
+//   console.log(result);
+// }
 
-test();
+// test();
