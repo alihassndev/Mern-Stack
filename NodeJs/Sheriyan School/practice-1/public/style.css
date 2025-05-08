@@ -1,0 +1,137 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+.container {
+    width: 80%;
+    margin: auto;
+    overflow-x: hidden;
+}
+a {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+    transition: all .35s ease;
+}
+a:hover {
+    color: rgb(0, 0, 156);
+    text-decoration: underline;
+}
+.navbar {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    height: 60px;
+    position: fixed;
+    top: 0;
+    background-color: #fff;
+}
+.logo {
+    font-weight: bold;
+}
+.navbar ul {
+    display: flex;
+    gap: 2rem;
+}
+.navbar ul li {
+    list-style: none;
+    font-size: 1.1rem;
+}
+button {
+    background-color: rgb(5, 255, 255);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 1.3rem;
+    cursor: pointer;
+    transition: all .3s ease;
+    width: auto;
+}
+button i {
+    background-color: black;
+    color: white;
+    padding: 2px;
+    border-radius: 50%;
+}
+.hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 120px;
+    /* gap: 5rem; */
+}
+.left h1 {
+    font-size: 4rem;
+}
+.left p {
+    color: grey;
+    font-size: 1.2rem;
+    margin: 1rem 0;
+}
+.left button {
+    font-size: 1.2rem;
+}
+.right img {
+    height: 30rem;
+}
+.dividor {
+    margin: 2rem 0;
+    height: 4rem;
+    width: 100%;
+    background: linear-gradient(to right, cyan, yellow);
+}
+#about {
+    text-align: center;
+}
+#about h1 {
+    margin: 4rem auto;
+    font-size: 2.5rem;
+    width: 40%;
+}
+#about p {
+    font-size: 1.2rem;
+    color: grey;
+    line-height: 1.5rem;
+}
+#about p:nth-of-type(2) {
+    margin: 2rem 0;
+}
+#work {
+    margin: 5rem 0;
+}
+#work .cards {
+    margin: 3rem 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+#work .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1rem;
+    border: 1px solid grey;
+    border-radius: 15px;
+    transition: all .3s ease;
+}
+#work .card:hover {
+    cursor: pointer;
+    background-color: rgb(239, 239, 239);
+    transform: scale(1.05);
+}
+#work .card h2 {
+    font-size: 1.3rem;
+    margin-bottom: .2rem;
+}
+#work .card span {
+    font-size: .8rem;
+    padding: 3px 5px;
+    border: 1px solid rgb(198, 198, 198);
+    border-radius: 20px;
+}
+.card img {
+    height: 12rem;
+}
