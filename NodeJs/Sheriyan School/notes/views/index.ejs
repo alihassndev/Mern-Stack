@@ -3,50 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <title>Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-zinc-900 text-white overflow-x-hidden">
-    <div class="main w-[80%] min-h-screen p-10 mx-auto">
-      <h1 class="text-4xl font-bold text-center">NoteBook</h1>
+  <body class="bg-gray-900 text-white min-h-screen p-6">
+    <h1 class="text-4xl font-bold text-center mb-10">NoteBook App</h1>
 
-      <div class="flex flex-col mt-10">
-        <form action="/create" method="post">
-          <input
-            type="text"
-            class="block w-full bg-zinc-700 py-2 px-3 rounded-lg"
-            placeholder="Enter Title"
-            name="title"
-          />
-          <textarea
-            class="block w-full bg-zinc-700 my-4 py-2 px-3 rounded-lg resize-none"
-            placeholder="Enter description"
-            name="description"
-          ></textarea>
+    <!-- Create Form -->
+    <div class="max-w-2xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
+      <form action="/create" method="post" class="space-y-4">
+        <input
+          type="text"
+          placeholder="Enter Title"
+          name="title"
+          class="w-full px-4 py-2 rounded-md bg-gray-700 text-white outline-none"
+        />
+        <textarea
+          placeholder="Enter description"
+          name="description"
+          class="w-full px-4 py-2 rounded-md bg-gray-700 text-white outline-none resize-none"
+        ></textarea>
+        <input
+          type="submit"
+          value="Create Task"
+          class="bg-blue-600 hover:bg-blue-500 transition px-6 py-2 rounded-md cursor-pointer text-white"
+        />
+      </form>
+    </div>
 
-          <div class="w-full flex justify-center">
-            <input
-              type="submit"
-              class="py-3 px-16 bg-blue-700 rounded-lg hover:bg-blue-600 cursor-pointer"
-              value="Create Task"
-            />
-          </div>
-        </form>
-      </div>
-
-      <div class="tasks flex gap-8 w-full my-10">
-        <% if (files.length > 0) { %> <% files.forEach(file => { %>
-        <div class="task w-80 p-5 rounded-lg bg-zinc-700">
-          <h2 class="text-xl font-bold"><%= file %></h2>
-          <div class="flex w-full justify-between mt-5">
-            <a href="/files/<%=file%>" class="text-blue-400">View More.</a>
-            <a href="" class="text-blue-400">Edit</a>
-          </div>
+    <!-- Tasks Section -->
+    <div
+      class="tasks max-w-4xl mx-auto mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+    >
+      <% if(files.length > 0) { %> <% files.forEach(file => { %>
+      <div class="task bg-gray-800 p-4 rounded-lg shadow-md">
+        <h1 class="text-xl font-semibold mb-2 break-all"><%= file %></h1>
+        <div class="flex gap-4">
+          <a href="/files/<%= file %>" class="text-blue-400 hover:underline"
+            >Read more</a
+          >
+          <a href="/edit/<%= file %>" class="text-yellow-400 hover:underline"
+            >Edit</a
+          >
         </div>
-        <% }); %> <% } else { %>
-        <h2 class="text-zinc-400">No tasks found</h2>
-        <% } %>
       </div>
+      <% }) %> <% } else { %>
+      <h2 class="text-center text-gray-400 col-span-full">No files yet ...</h2>
+      <% } %>
     </div>
   </body>
 </html>

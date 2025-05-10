@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Task</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 text-white min-h-screen p-8">
+    <div class="max-w-2xl mx-auto">
+      <a href="/" class="text-blue-400 hover:underline mb-6 inline-block"
+        >← Back to Home</a
+      >
+      <h1 class="text-3xl font-bold mb-6">Edit Note</h1>
+
+      <form
+        action="/edit"
+        method="post"
+        class="space-y-4 bg-gray-800 p-6 rounded-lg shadow-lg"
+      >
+        <input
+          type="text"
+          name="previous"
+          placeholder="Previous Title"
+          value="<%= filename %>"
+          class="w-full p-3 rounded bg-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <input
+          type="text"
+          name="new"
+          placeholder="New Title"
+          class="w-full p-3 rounded bg-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <textarea
+          name="description"
+          placeholder="Current Description"
+          class="w-full p-3 rounded bg-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+          rows="4"
+        >
+<%= content %></textarea
+        >
+
+        <textarea
+          name="newd"
+          placeholder="New Description"
+          class="w-full p-3 rounded bg-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+          rows="4"
+        ></textarea>
+
+        <input
+          type="submit"
+          value="Update Task"
+          class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded cursor-pointer transition duration-300"
+        />
+      </form>
+    </div>
+  </body>
+</html>

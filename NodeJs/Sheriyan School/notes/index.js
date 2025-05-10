@@ -17,22 +17,40 @@ app.get("/", (req, res) => {
 
 app.post("/create", (req, res) => {
   fs.writeFile(
-    `./files/${req.body.title.split(" ").join("")}.txt`,
+    `./files/${req.body.title}.txt`,
     `${req.body.description}`,
     (err) => {
-      console.log("written");
+      console.log("Writing done");
+      res.redirect("/");
     }
   );
-  console.log(req.body);
-  res.redirect("/");
 });
 
 app.get("/files/:filename", (req, res) => {
   fs.readFile(`./files/${req.params.filename}`, "utf-8", (err, data) => {
-    res.render("show", {
-      filename: req.params.filename,
-      content: data,
-    });
+    res.render("show", { filename: req.params.filename, content: data });
+  });
+});
+
+app.get("/edit/:filename", (req, res) => {
+  fs.readFile(`./files/${req.params.filename}`, "utf-8", (err, data) => {
+    res.render("edit", { filename: req.params.filename, content: data });
+  });
+});
+
+app.post("/edit", (req, res) => {
+  fs.rename(
+    `./files/${req.body.previous}`,
+    `./files/${req.body.new}.txt`,
+    (err) => {
+      console.log(err);
+    }
+  );
+  fs.unlink(`./files/${req.body.previous}`, (err) => {
+    console.log(err);
+  });
+  fs.writeFile(`./files/${req.body.new}.txt`, `${req.body.newd}`, (err) => {
+    res.redirect("/");
   });
 });
 
