@@ -10,6 +10,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "ejs": "^3.1.10",
+>>>>>>> 4f05289f7dfa1564ea23ff7c0b613aeb98675220
     "express": "^5.1.0",
     "mongoose": "^8.14.2"
   }
