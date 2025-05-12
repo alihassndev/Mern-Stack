@@ -3,10 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Home</title>
   </head>
-  <body>
-    <h1>Welcome Home</h1>
+  <body class="bg-zinc-900 text-white min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-zinc-800 fixed top-0 w-full px-6 py-4 shadow-md">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-semibold text-blue-400">MyApp</h1>
+        <div class="space-x-4">
+          <a href="/" class="text-white hover:text-blue-400 transition-colors"
+            >Home</a
+          >
+          <a
+            href="/profile"
+            class="text-white hover:text-blue-400 transition-colors"
+            >Profile</a
+          >
+          <a
+            href="/logout"
+            class="text-white hover:text-red-400 transition-colors"
+            >Logout</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Optional main content area -->
+    <main class="p-6 text-center mt-16">
+      <h2 class="text-3xl font-bold">Welcome to the Dashboard</h2>
+    </main>
   </body>
 </html>
