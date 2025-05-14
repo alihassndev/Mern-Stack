@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Upload File</title>
+  </head>
+  <body class="bg-zinc-900 text-white min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-zinc-800 fixed top-0 w-full px-6 py-4 shadow-md z-10">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-semibold text-blue-400">MyApp</h1>
+        <div class="space-x-4">
+          <a href="/" class="text-white hover:text-blue-400 transition-colors"
+            >Home</a
+          >
+          <a
+            href="/profile"
+            class="text-white hover:text-blue-400 transition-colors"
+            >Profile</a
+          >
+          <a
+            href="/logout"
+            class="text-white hover:text-red-400 transition-colors"
+            >Logout</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex items-center justify-center pt-32 px-4">
+      <div
+        class="w-full max-w-md bg-zinc-800 p-8 rounded-2xl shadow-lg space-y-6"
+      >
+        <h2 class="text-3xl font-bold text-center">Upload File</h2>
+
+        <form
+          action="/uploadProfile"
+          method="POST"
+          enctype="multipart/form-data"
+          class="space-y-4"
+        >
+          <!-- File Input -->
+          <label class="block">
+            <span class="text-sm text-zinc-300 mb-1 block"
+              >Choose an image</span
+            >
+            <input
+              type="file"
+              name="image"
+              required
+              class="block w-full text-sm text-zinc-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 bg-zinc-800 border border-zinc-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            />
+          </label>
+
+          <!-- Submit Button -->
+          <input
+            type="submit"
+            value="Upload File"
+            class="w-full bg-blue-600 hover:bg-blue-700 transition-all text-white font-medium py-2.5 rounded-lg cursor-pointer"
+          />
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

@@ -32,10 +32,21 @@
     <!-- Main Content -->
     <div class="flex justify-center items-start pt-32 px-4">
       <div class="bg-zinc-800 p-8 rounded-lg shadow-lg w-full max-w-xl">
-        <h1 class="text-3xl font-bold text-blue-400 mb-4">
-          Hello <%= user.username.charAt(0).toUpperCase() +
-          user.username.slice(1) %>, Welcome to your Profile
-        </h1>
+        <div class="flex gap-5 justify-center items-center mb-4">
+          <div class="w-12 h-12 rounded-lg overflow-hidden">
+            <a href="/profile/upload">
+              <img
+                class="h-full w-full object-cover"
+                src="./images/uploads/<%= user.profile %>"
+                alt="<%+user.username%>"
+              />
+            </a>
+          </div>
+          <h1 class="text-3xl font-bold text-blue-400">
+            Hello <%= user.username.charAt(0).toUpperCase() +
+            user.username.slice(1) %>, Welcome to your Profile
+          </h1>
+        </div>
 
         <p class="text-zinc-300 mb-6">You can create a new post below:</p>
 

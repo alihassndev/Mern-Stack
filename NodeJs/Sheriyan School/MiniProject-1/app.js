@@ -4,12 +4,12 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-
 const app = express();
 
 // Models
 const userModel = require("./Models/user");
 const postModel = require("./Models/post");
+const upload = require("./config/multer");
 
 // ========================
 // Middleware and Setup
@@ -30,6 +30,25 @@ app.get("/", isloggedin, async (req, res) => {
     .populate("posts");
   res.render("index", { user });
 });
+
+app.get("/profile/upload", isloggedin, async (req, res) => {
+  res.render("profileUpload");
+});
+
+app.post(
+  "/uploadProfile",
+  upload.single("image"),
+  isloggedin,
+  async (req, res) => {
+    let user = await userModel.findOne({ email: req.user.email });
+    // console.log(req.file.originalname);
+
+    user.profile = req.file.filename;
+    await user.save();
+
+    res.redirect("/profile");
+  }
+);
 
 app.get("/signup", (req, res) => {
   res.render("signup");
