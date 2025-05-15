@@ -36,18 +36,18 @@
       <div class="py-10">
         <h2 class="text-2xl font-semibold mb-4">Your Posts</h2>
         <div class="space-y-6">
-          <% if (user.posts.length > 0) { %> <%
-          user.posts.slice().reverse().forEach(post => { %>
+          <% if (user.posts.length > 0) { %>
+          <%user.posts.slice().reverse().forEach(post => { %>
           <div class="bg-zinc-800 p-4 rounded shadow">
-            <h2 class="text-blue-500 font-medium">@<%= user.username %></h2>
+            <h2 class="text-blue-500 font-medium">@ <%= user.username %></h2>
             <p class="text-white mt-2"><%= post.content %></p>
-            <small><%= post.like.length %> likes</small>
+            <small><%= (post.likes && post.likes.length) || 0 %> likes</small>
             <div class="mt-4 flex space-x-4 text-sm">
               <a
                 href="/like/<%=post._id %>"
                 class="text-green-400 hover:underline"
-                ><%= post.like.indexOf(user._id) === -1 ? "Like": "Unlike";
-                %></a
+                ><%= post.likes.indexOf(user._id) === -1 ? "Like":
+                "Unlike";%></a
               >
               <a
                 href="/edit/<%=post._id%>"

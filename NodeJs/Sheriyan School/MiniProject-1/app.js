@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
@@ -59,7 +58,7 @@ app.post("/signup", async (req, res) => {
 
   const userExists = await userModel.findOne({ email });
   if (userExists) {
-    return res.send("User already exists!");
+    return res.redirect("/signup");
   }
 
   try {
@@ -120,8 +119,8 @@ app.post("/post", isloggedin, async (req, res) => {
     user.posts.push(post._id);
     await user.save();
 
-    console.log("user created:", user);
-    console.log("Post created:", post);
+    // console.log("user created:", user);
+    // console.log("Post created:", post);
     res.redirect("/");
   } catch (err) {
     console.log("Error creating post:", err);
@@ -148,10 +147,11 @@ function isloggedin(req, res, next) {
 app.get("/like/:id", isloggedin, async (req, res) => {
   let post = await postModel.findOne({ _id: req.params.id }).populate("user");
 
-  if (post.like.indexOf(req.user.userId) === -1) {
-    post.like.push(req.user.userId);
+  if (post.likes.indexOf(req.user.userId) === -1) {
+    post.likes.push(req.user.userId);
   } else {
-    post.like.splice(post.like.indexOf(req.user.userId), 1);
+    // remove liked id using splice method
+    post.likes.splice(post.likes.indexOf(req.user.userId), 1);
   }
   await post.save();
   res.redirect("/");
