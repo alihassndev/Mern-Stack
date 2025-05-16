@@ -1,12 +1,18 @@
 const mongoose = require("mongoose");
+const config = require("config");
+
+const debuger = require("debug")("development:mongoose");
 
 mongoose
-  .connect("mongodb://localhost:27017/Syhil")
+  .connect(`${config.get("MONGODB_URI")}/Syhil`)
   .then(() => {
-    console.log("Connected ...");
+    debuger("Connected ...");
   })
   .catch((err) => {
-    console.error(err);
+    debuger(err);
   });
 
 module.exports = mongoose.connection;
+
+// $env:DEBUG="development:*"; node db.js
+// to run debugger
