@@ -13,21 +13,26 @@ if (process.env.NODE_ENV === "development") {
     }
 
     let { fullname, email, password } = req.body;
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(password, salt, async (err, hash) => {
-        let createdOwner = await ownerModel.create({
-          fullname,
-          email,
-          password: hash,
-        });
-        res.status(201).send(createdOwner);
-      });
+
+    let createdOwner = await ownerModel.create({
+      fullname,
+      email,
+      password: hash,
     });
+    res.status(201).send(createdOwner);
   });
 }
 
 router.get("/", (req, res) => {
   res.send("Welcome to owner router");
+});
+
+router.get("/products", (req, res) => {
+  res.render("index");
+});
+
+router.get("admin", (req, res) => {
+  res.render("createproducts");
 });
 
 module.exports = router;
