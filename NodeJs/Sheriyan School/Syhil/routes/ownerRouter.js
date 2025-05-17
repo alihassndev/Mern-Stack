@@ -14,12 +14,20 @@ if (process.env.NODE_ENV === "development") {
 
     let { fullname, email, password } = req.body;
 
-    let createdOwner = await ownerModel.create({
-      fullname,
-      email,
-      password: hash,
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) {
+        return res.send("Something went wrong ...");
+      } else {
+        bcrypt.hash(password, salt, async (err, hash) => {
+          let createdOwner = await ownerModel.create({
+            fullname,
+            email,
+            password: hash,
+          });
+          res.status(201).send(createdOwner);
+        });
+      }
     });
-    res.status(201).send(createdOwner);
   });
 }
 

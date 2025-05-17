@@ -28,9 +28,29 @@ module.exports.registerUser = async (req, res) => {
         });
       });
     } else {
-      return res.status(401).send("You aleady have account");
+      return res.status(401).send("You aleady have account, please login");
     }
   } catch (error) {
     res.send(error.message);
+  }
+};
+
+module.exports.loginUser = async (req, res) => {
+  let { email, password } = req.body;
+
+  let user = await userModel.findOne({ email });
+
+  if (!user) {
+    return res.send("Please register first ...");
+  } else {
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (result) {
+        let token = generatetoken(user);
+        res.cookie("token", token);
+        res.send("you can login");
+      } else {
+        return res.send("Email or password incorrect ...");
+      }
+    });
   }
 };
