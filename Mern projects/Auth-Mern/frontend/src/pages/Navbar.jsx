@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
     <>
-      <div className="flex w-full px-16 justify-between items-center h-16 bg-blue-950 text-white mx-auto">
+      <div className="flex fixed top-0 left-0 w-full px-16 justify-between items-center h-16 bg-blue-950 text-white mx-auto">
         <div className="font-bold text-lg">
           <Link to={"/"}>Auth</Link>
         </div>
