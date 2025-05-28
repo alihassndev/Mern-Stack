@@ -1,9 +1,13 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <form className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <form
+        action={"/api/v1/users/register"}
+        method="POST"
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
+      >
         <h2 className="text-2xl font-semibold mb-6 text-center">Register</h2>
 
         <input
@@ -42,11 +46,19 @@ const Signup = () => {
           <option value="Professional">Professional</option>
         </select>
 
-        <input
-          type="submit"
-          value="Register"
-          className="w-full bg-indigo-600 text-white py-2 rounded-md cursor-pointer hover:bg-indigo-700 transition"
-        />
+        <Link to={"/signin"}>
+          <input
+            type="submit"
+            value="Register"
+            className="w-full bg-indigo-600 text-white py-2 rounded-md cursor-pointer hover:bg-indigo-700 transition"
+          />
+        </Link>
+
+        <Link to={"/signin"}>
+          <div className="w-full my-5 border rounded-md p-3 border-gray-400 text-center hover:bg-blue-100 transition-all duration-300">
+            Already have account <span className="text-blue-600">Sign In</span>
+          </div>
+        </Link>
       </form>
     </div>
   );
