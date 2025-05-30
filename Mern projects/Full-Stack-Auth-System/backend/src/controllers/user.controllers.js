@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import bcrypt from "bcrypt";
+// import { transporter } from "../utils/nodeMailer.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -11,12 +12,39 @@ const registerUser = asyncHandler(async (req, res) => {
     return res.status(401).json({ success: false, message: "Missing details" });
   }
 
+  const existingUser = await User.findOne({
+    $or: [{ email }, { username }],
+  });
+
+  if (existingUser) {
+    return res
+      .status(400)
+      .json({ success: false, message: "User Already exists" });
+  }
+
   const user = await User.create({ username, email, password });
+
+  // sending welcome email
+  // const mailOptions = {
+  //   from: process.env.SENDER_EMAIL,
+  //   to: email,
+  //   subject: "Welcome to Auth Mern Project",
+  //   text: `Welcome to Auth FullStack Mern Project. Your account has been created with email id: ${email}`,
+  // };
+
+  // await transporter.sendMail(mailOptions);
+  // res.cookie("token", "");
   res.status(201).json({ success: true, data: user, message: "user created" });
 });
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    res
+      .status(400)
+      .json({ success: false, message: "email or password is required" });
+  }
 
   const userExist = await User.findOne({ email });
 
@@ -53,9 +81,8 @@ const loginUser = asyncHandler(async (req, res) => {
   const option = {
     httpOnly: true,
     secure: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   };
-
-  req.user = user;
 
   res.cookie("token", token, option);
   return res
@@ -70,14 +97,20 @@ const logoutUser = asyncHandler(async (req, res) => {
   if (!user) {
     return res
       .status(401)
-      .json({ success: false, message: "User object fetching error 101" });
+      .json({ success: false, message: "User object fetching error" });
   }
 
-  res.cookie.token = "";
+  const option = {
+    httpOnly: true,
+    secure: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  };
+
+  res.clearCookie("token", option);
 
   return res
     .status(200)
-    .json({ success: true, user, message: "logout successfully" });
+    .json({ success: true, message: "logout successfully" });
 });
 
 const changePassword = asyncHandler(async (req, res) => {
@@ -99,4 +132,12 @@ const changePassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedUser, "Password changed successfully"));
 });
 
-export { registerUser, loginUser, logoutUser, changePassword };
+const getUserData = asyncHandler(async (req, res) => {
+  const user = req.user;
+
+  return res
+    .status(200)
+    .json({ success: true, user, message: "User data fetched Successfully" });
+});
+
+export { registerUser, loginUser, logoutUser, changePassword, getUserData };
