@@ -1,14 +1,12 @@
-import { User } from "../models/user.model.js";
-import { ApiError } from "../utils/ApiError.js";
+import { User } from "../models/user.models.js";
+import "dotenv/config";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   // _ --> res
   try {
-    const token =
-      req.cookies?.AccessToken ||
-      req.header("Authorization")?.replace("Bearer ", "");
+    const token = req.cookies?.token;
 
     if (!token) {
       return res
@@ -18,7 +16,7 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
 
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
 
-    const user = await User.findById(decodedToken?._id).select("-paaword");
+    const user = await User.findById(decodedToken?.id).select("-password");
 
     if (!user) {
       // todo in frontend
