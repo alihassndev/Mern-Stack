@@ -291,7 +291,7 @@ select {
 
 /* ===== Hero Section ===== */
 .hero {
-  padding-top: 10rem;
+  padding-top: 12rem;
   padding-bottom: 5rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
   position: relative;
@@ -356,22 +356,41 @@ select {
 }
 
 .whatsapp-float {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #25d366;
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
-  background-color: #25d366;
-  color: var(--white);
-  border-radius: 50%;
-  font-size: 2rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: var(--transition);
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .whatsapp-float:hover {
+  background-color: #128c7e;
+  color: #fff;
   transform: scale(1.1);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+
+/* Media Query for Mobile */
+@media screen and (max-width: 767px) {
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    bottom: 20px;
+    right: 20px;
+  }
 }
 
 /* ===== Services Section ===== */
@@ -1252,6 +1271,9 @@ select {
   .popular {
     transform: scale(1.02);
   }
+  .hero {
+    max-height: 100vh;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1467,6 +1489,11 @@ select {
   width: 100%;
 }
 
+.new-price {
+  color: #187bcd;
+  font-weight: bold;
+}
+
 /* ===== Animations ===== */
 @keyframes fadeIn {
   from {
@@ -1481,4 +1508,89 @@ select {
 
 [data-aos] {
   transition-property: transform, opacity;
+}
+
+/* Form Validation Styles */
+.error-message {
+  display: none;
+  color: var(--danger-color);
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+.form-group.error .error-message {
+  display: block;
+}
+
+.form-group.error input,
+.form-group.error select {
+  border-color: var(--danger-color);
+  background-color: rgba(220, 53, 69, 0.05);
+}
+
+.form-group.success input,
+.form-group.success select {
+  border-color: var(--success-color);
+  background-color: rgba(40, 167, 69, 0.05);
+}
+
+/* Form field focus states */
+.modal-form input:focus,
+.modal-form select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(42, 157, 244, 0.2);
+}
+
+.form-group.error input:focus,
+.form-group.error select:focus {
+  border-color: var(--danger-color);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+
+.form-group.success input:focus,
+.form-group.success select:focus {
+  border-color: var(--success-color);
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
+}
+
+/* Visit Charges Styles */
+.visit-charges .price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  /* border-bottom: 1px dashed var(--light-gray); */
+  margin-bottom: 1rem;
+}
+
+.visit-charges .price-item:last-of-type {
+  margin-bottom: 1.5rem;
+}
+
+.visit-charges .area {
+  color: var(--dark-color);
+  font-weight: 500;
+}
+
+.visit-charges .price {
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.visit-charges li:not(.price-item) {
+  color: var(--gray-color);
+  margin-bottom: 0.5rem;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.visit-charges > li:not(.price-item)::before {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  color: var(--success-color);
 }

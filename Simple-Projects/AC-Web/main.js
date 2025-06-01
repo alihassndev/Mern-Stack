@@ -119,31 +119,207 @@ const setupModals = () => {
     }
   });
 
+  // Form validation functions
+  const showError = (input, message) => {
+    const formGroup = input.parentElement;
+    formGroup.className = "form-group error";
+    const errorMessage = formGroup.querySelector(".error-message");
+    errorMessage.textContent = message;
+  };
+
+  const showSuccess = (input) => {
+    const formGroup = input.parentElement;
+    formGroup.className = "form-group success";
+  };
+
+  const validateEmail = (email) => {
+    if (email.value.trim() === "") return true; // Email is optional
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(String(email.value.trim()).toLowerCase());
+  };
+
+  const validatePhone = (phone) => {
+    const re = /^03\d{9}$/;
+    return re.test(String(phone.value.trim()));
+  };
+
+  const validateName = (name) => {
+    const re = /^[A-Za-z .]{3,50}$/;
+    return re.test(String(name.value.trim()));
+  };
+
   // Form submission
   const bookingForm = document.getElementById("booking-form");
   if (bookingForm) {
+    const validateForm = () => {
+      let isValid = true;
+
+      // Validate Name
+      const name = document.getElementById("name");
+      if (name.value.trim() === "") {
+        showError(name, "Name is required");
+        isValid = false;
+      } else if (!validateName(name)) {
+        showError(
+          name,
+          "Please enter a valid name (3-50 characters, letters only)"
+        );
+        isValid = false;
+      } else {
+        showSuccess(name);
+      }
+
+      // Validate Phone
+      const phone = document.getElementById("phone");
+      if (phone.value.trim() === "") {
+        showError(phone, "Phone number is required");
+        isValid = false;
+      } else if (!validatePhone(phone)) {
+        showError(
+          phone,
+          "Please enter a valid Pakistani mobile number (03XXXXXXXXX)"
+        );
+        isValid = false;
+      } else {
+        showSuccess(phone);
+      }
+
+      // Validate Email (optional)
+      const email = document.getElementById("email");
+      if (email.value.trim() !== "" && !validateEmail(email)) {
+        showError(email, "Please enter a valid email address");
+        isValid = false;
+      } else {
+        showSuccess(email);
+      }
+
+      // Validate Service
+      const service = document.getElementById("service");
+      if (service.value === "") {
+        showError(service, "Please select a service");
+        isValid = false;
+      } else {
+        showSuccess(service);
+      }
+
+      // Validate Urgency
+      const urgency = document.getElementById("urgency");
+      if (urgency.value === "") {
+        showError(urgency, "Please select urgency level");
+        isValid = false;
+      } else {
+        showSuccess(urgency);
+      }
+
+      return isValid;
+    };
+
+    // Real-time validation
+    const inputs = bookingForm.querySelectorAll("input, select");
+    inputs.forEach((input) => {
+      input.addEventListener("blur", () => {
+        switch (input.id) {
+          case "name":
+            if (input.value.trim() === "") {
+              showError(input, "Name is required");
+            } else if (!validateName(input)) {
+              showError(
+                input,
+                "Please enter a valid name (3-50 characters, letters only)"
+              );
+            } else {
+              showSuccess(input);
+            }
+            break;
+          case "phone":
+            if (input.value.trim() === "") {
+              showError(input, "Phone number is required");
+            } else if (!validatePhone(input)) {
+              showError(
+                input,
+                "Please enter a valid Pakistani mobile number (03XXXXXXXXX)"
+              );
+            } else {
+              showSuccess(input);
+            }
+            break;
+          case "email":
+            if (input.value.trim() !== "" && !validateEmail(input)) {
+              showError(input, "Please enter a valid email address");
+            } else {
+              showSuccess(input);
+            }
+            break;
+          case "service":
+          case "urgency":
+            if (input.value === "") {
+              showError(input, `Please select ${input.id}`);
+            } else {
+              showSuccess(input);
+            }
+            break;
+        }
+      });
+    });
+
     bookingForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // Validate form
-      const name = document.getElementById("name").value;
-      const phone = document.getElementById("phone").value;
-      const service = document.getElementById("service").value;
-      const urgency = document.getElementById("urgency").value;
-
-      if (!name || !phone || !service || !urgency) {
-        alert("Please fill all required fields");
+      // Validate form before submission
+      if (!validateForm()) {
         return;
       }
 
-      // Close booking modal and show success modal
-      closeModals();
-      setTimeout(() => {
-        openModal("success-modal");
-      }, 300);
+      // Show loading state
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      submitBtn.disabled = true;
 
-      // Reset form
-      this.reset();
+      // Prepare the template parameters
+      const templateParams = {
+        to_email: "alihamza8637273@gmail.com",
+        from_name: document.getElementById("name").value.trim(),
+        from_email:
+          document.getElementById("email").value.trim() || "No email provided",
+        phone: document.getElementById("phone").value.trim(),
+        service: document.getElementById("service").value,
+        urgency: document.getElementById("urgency").value,
+        brand: document.getElementById("brand").value.trim() || "Not specified",
+      };
+
+      // Send the email using EmailJS
+      emailjs
+        .send("service_58vvejh", "template_wvq5swp", templateParams)
+        .then(
+          () => {
+            // Hide the booking modal
+            document.getElementById("booking-modal").classList.remove("show");
+            document.getElementById("overlay").classList.remove("show");
+
+            // Show success modal
+            document.getElementById("success-modal").classList.add("show");
+            document.getElementById("overlay").classList.add("show");
+
+            // Reset the form and validation states
+            this.reset();
+            inputs.forEach((input) => {
+              const formGroup = input.parentElement;
+              formGroup.className = "form-group";
+            });
+          },
+          (error) => {
+            alert(
+              "Failed to send message. Please try again or contact us directly."
+            );
+            console.error("EmailJS error:", error);
+          }
+        )
+        .finally(() => {
+          // Reset button state
+          submitBtn.innerHTML = originalBtnText;
+          submitBtn.disabled = false;
+        });
     });
   }
 };
@@ -254,6 +430,11 @@ const setupScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 };
+
+// Initialize EmailJS
+(function () {
+  emailjs.init("4JvEHTw1DNzgw74T5"); // Replace with your EmailJS public key
+})();
 
 // Initialize all functionality
 document.addEventListener("DOMContentLoaded", () => {
