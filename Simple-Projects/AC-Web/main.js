@@ -8,6 +8,53 @@ AOS.init({
   once: true,
 });
 
+// Handle active navigation links
+const handleActiveNavLinks = () => {
+  const sections = document.querySelectorAll("section[id]");
+  const navLinks = document.querySelectorAll(".nav-link");
+
+  // Update active link based on scroll position
+  const updateActiveLink = () => {
+    const scrollY = window.scrollY;
+
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop - 100;
+      const sectionHeight = section.offsetHeight;
+      const sectionId = section.getAttribute("id");
+
+      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === `#${sectionId}`) {
+            link.classList.add("active");
+          }
+        });
+      }
+    });
+
+    // Handle case when scrolled to top
+    if (scrollY < 100) {
+      navLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === "#home") {
+          link.classList.add("active");
+        }
+      });
+    }
+  };
+
+  // Update active link on scroll
+  window.addEventListener("scroll", updateActiveLink);
+
+  // Update active link on click
+  navLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      navLinks.forEach((link) => link.classList.remove("active"));
+      this.classList.add("active");
+    });
+  });
+};
+
 // Initialize testimonial slider
 const initTestimonialSlider = () => {
   const testimonialSlider = new Swiper(".testimonial-slider", {
@@ -169,9 +216,7 @@ const setupMobileMenu = () => {
     mobileMenuBtn.addEventListener("click", (e) => {
       e.preventDefault();
       nav.classList.toggle("active");
-      document.body.style.overflow = nav.classList.contains("active")
-        ? "hidden"
-        : "";
+      document.body.classList.toggle("nav-active");
     });
   }
 };
@@ -185,7 +230,7 @@ const setupMobileMenuLinks = () => {
     link.addEventListener("click", () => {
       if (nav.classList.contains("active")) {
         nav.classList.remove("active");
-        document.body.style.overflow = "";
+        document.body.classList.remove("nav-active");
       }
     });
   });
@@ -219,4 +264,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMobileMenu();
   setupMobileMenuLinks();
   setupScrollToTop();
+  handleActiveNavLinks();
 });

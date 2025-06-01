@@ -157,9 +157,6 @@
             />
             <span>Lahore CoolCare</span>
           </a>
-          <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
-            <i class="fas fa-bars"></i>
-          </button>
         </div>
 
         <nav class="nav" role="navigation" aria-label="Main navigation">
@@ -185,6 +182,10 @@
             </li>
           </ul>
         </nav>
+
+        <button class="mobile-menu-btn" aria-label="Toggle navigation menu">
+          <i class="fas fa-bars"></i>
+        </button>
       </div>
     </header>
 
@@ -219,6 +220,15 @@
               <span>Certified Technicians</span>
             </div>
           </div>
+        </div>
+
+        <!-- Added technician image -->
+        <div class="hero-image">
+          <img
+            src="https://t4.ftcdn.net/jpg/09/15/17/52/360_F_915175207_1Qe5zQeVhJf5zQe5zQe5zQe5zQe5zQe5.jpg"
+            alt="Technician repairing air conditioner"
+            loading="lazy"
+          />
         </div>
       </div>
     </section>
@@ -259,7 +269,7 @@
               data-open-modal="booking-modal"
               aria-label="Book AC repair service"
             >
-              Book Service
+              <i class="fas fa-tools"></i> Book Service
             </button>
           </article>
 
@@ -285,7 +295,7 @@
               data-open-modal="booking-modal"
               aria-label="Book AC installation service"
             >
-              Book Service
+              <i class="fas fa-wrench"></i> Book Service
             </button>
           </article>
 
@@ -311,20 +321,21 @@
               data-open-modal="booking-modal"
               aria-label="Book refrigerator repair service"
             >
-              Book Service
+              <i class="fas fa-tools"></i> Book Service
             </button>
           </article>
 
           <article class="card" data-aos="zoom-in" data-aos-delay="300">
             <div class="card-icon">
               <img
-                src="https://img.icons8.com/fluency/96/000000/cleaning-services.png"
-                alt="Deep Cleaning Icon"
+                src="https://cdn-icons-png.flaticon.com/512/2973/2973536.png"
+                alt="AC Deep Cleaning Icon"
                 width="48"
                 height="48"
                 loading="lazy"
               />
             </div>
+
             <h3>Deep Cleaning</h3>
             <ul class="service-list">
               <li>AC chemical wash</li>
@@ -337,7 +348,33 @@
               data-open-modal="booking-modal"
               aria-label="Book deep cleaning service"
             >
-              Book Service
+              <i class="fas fa-spray-can"></i> Book Service
+            </button>
+          </article>
+
+          <article class="card" data-aos="zoom-in" data-aos-delay="400">
+            <div class="card-icon">
+              <img
+                src="https://img.icons8.com/fluency/96/000000/worker-male.png"
+                alt="Expert Technician Icon"
+                width="48"
+                height="48"
+                loading="lazy"
+              />
+            </div>
+            <h3>Expert Technician Visit</h3>
+            <ul class="service-list">
+              <li>Professional diagnosis</li>
+              <li>Multi-brand expertise</li>
+              <li>Same-day service</li>
+              <li>Upfront pricing</li>
+            </ul>
+            <button
+              class="btn-outline"
+              data-open-modal="booking-modal"
+              aria-label="Book expert technician visit"
+            >
+              <i class="fas fa-user-cog"></i> Book Visit
             </button>
           </article>
         </div>
@@ -353,13 +390,16 @@
     >
       <div class="container grid">
         <div class="about-image" data-aos="fade-right">
-          <img
-            src="https://images.unsplash.com/photo-1581093450021-4a7360e9a7e8?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-            alt="Our Technician at Work"
-            width="500"
-            height="500"
-            loading="lazy"
-          />
+          <div class="hero-image">
+            <img
+              src="https://img.freepik.com/premium-photo/asian-technician-man-installing-air-conditioning-client-house-young-repairman-fixing-air-conditioner-unit-maintenance-repairing-concepts_29315-1132.jpg"
+              alt="Asian Technician Working on AC"
+              width="600"
+              height="600"
+              loading="lazy"
+            />
+          </div>
+
           <div class="experience-badge">
             <span>10+</span>
             <p>Years Experience</p>
@@ -411,9 +451,6 @@
             >
               <i class="fas fa-phone-alt"></i> Call Now
             </a>
-            <button class="btn-outline" aria-label="Download our price list">
-              <i class="fas fa-download"></i> Download Price List
-            </button>
           </div>
         </div>
       </div>
@@ -664,7 +701,7 @@
                 </blockquote>
                 <div class="client-info">
                   <img
-                    src="https://randomuser.me/api/portraits/men/32.jpg"
+                    src="https://img.icons8.com/fluency/96/000000/user-male-circle.png"
                     alt="Ahmed R."
                     class="client-img"
                     width="60"
@@ -695,7 +732,7 @@
                 </blockquote>
                 <div class="client-info">
                   <img
-                    src="https://randomuser.me/api/portraits/women/44.jpg"
+                    src="https://img.icons8.com/fluency/96/000000/user-female-circle.png"
                     alt="Fatima K."
                     class="client-img"
                     width="60"
@@ -726,7 +763,7 @@
                 </blockquote>
                 <div class="client-info">
                   <img
-                    src="https://randomuser.me/api/portraits/men/75.jpg"
+                    src="https://img.icons8.com/fluency/96/000000/user-male-circle.png"
                     alt="Usman S."
                     class="client-img"
                     width="60"
