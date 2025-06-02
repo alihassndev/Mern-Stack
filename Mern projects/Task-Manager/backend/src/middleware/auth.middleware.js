@@ -1,7 +1,7 @@
 import { User } from "../model/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const verifyJWT = asyncHandler(async (req, res, next) => {
+const verifyJWT = asyncHandler(async (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -22,3 +22,5 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
 
   next();
 });
+
+export { verifyJWT };

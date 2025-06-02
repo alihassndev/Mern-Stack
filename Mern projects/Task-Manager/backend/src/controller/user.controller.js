@@ -141,4 +141,33 @@ const forgetUserPassword = asyncHandler(async (req, res) => {
     .json({ success: true, message: "Password changed successfully ..." });
 });
 
-export { registerUser, loginUser, logoutUser, forgetUserPassword };
+const changeUserPassword = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ success: false, message: "All fields are required ..." });
+  }
+
+  if (email !== user.email) {
+    return res.status(400).json({ success: false, message: "wrong email ..." });
+  }
+
+  user.password = password;
+
+  await user.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json({ success: true, message: "Password changed successfully ..." });
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  changeUserPassword,
+  forgetUserPassword,
+};

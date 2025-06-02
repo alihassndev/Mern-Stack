@@ -3,6 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import { router as userRouter } from "./routes/user.routes.js";
+import { router as taskRouter } from "./routes/tasks.routes.js";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(
 app.use(cookieParser());
 
 app.use("api/v1/users", userRouter);
+app.use("api/v1/tasks", taskRouter);
 
 app.get("/", (req, res) => {
   return res.status(200).json({ success: true, message: "Working ..." });
