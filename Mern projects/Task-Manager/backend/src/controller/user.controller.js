@@ -87,7 +87,7 @@ const loginUser = asyncHandler(async (req, res) => {
     secure: true,
   };
 
-  res.cookies("token", token, options);
+  res.cookie("token", token, options);
 
   return res
     .status(200)
@@ -123,7 +123,7 @@ const forgetUserPassword = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Email is required ..." });
   }
 
-  const user = User.findOne({ email });
+  const user = await User.findOne({ email });
 
   if (!user) {
     return res.status(404).json({
@@ -138,7 +138,7 @@ const forgetUserPassword = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json({ success: true, message: "Password changed successfully ..." });
+    .json({ success: true, message: "Password set successfully ..." });
 });
 
 const changeUserPassword = asyncHandler(async (req, res) => {

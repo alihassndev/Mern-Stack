@@ -1,5 +1,6 @@
-import { User } from "../model/user.model.js";
+import jwt from "jsonwebtoken";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { User } from "../model/user.model.js";
 
 const verifyJWT = asyncHandler(async (req, res, next) => {
   const token = req.cookies.token;
@@ -10,8 +11,18 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
       .json({ success: false, message: "Token not found ..." });
   }
 
-  const user = await User.findOne({ _id: token.id });
+  // ✅ Decode token to get the payload (like id, email)
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+  } catch (err) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Invalid or expired token" });
+  }
 
+  // ✅ Use decoded.id to find the user
+  const user = await User.findById(decoded.id);
   if (!user) {
     return res
       .status(404)
@@ -19,7 +30,6 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
   }
 
   req.user = user;
-
   next();
 });
 

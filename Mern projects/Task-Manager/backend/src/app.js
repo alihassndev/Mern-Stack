@@ -16,8 +16,8 @@ app.use(
 );
 app.use(cookieParser());
 
-app.use("api/v1/users", userRouter);
-app.use("api/v1/tasks", taskRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/tasks", taskRouter);
 
 app.get("/", (req, res) => {
   return res.status(200).json({ success: true, message: "Working ..." });

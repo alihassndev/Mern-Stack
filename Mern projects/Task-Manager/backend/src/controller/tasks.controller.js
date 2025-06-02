@@ -59,7 +59,7 @@ const updateTask = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Task content is required ..." });
   }
 
-  const task = await Task.findOne(id);
+  const task = await Task.findOne({ _id: id });
 
   if (!task) {
     return res.status(400).json({ success: false, message: "Invalid request" });
@@ -122,7 +122,7 @@ const updateStatus = asyncHandler(async (req, res) => {
       .json({ success: false, message: "ID is not found ..." });
   }
 
-  const task = await Task.findOne(id);
+  const task = await Task.findOne({ _id: id });
 
   if (!task) {
     return res
