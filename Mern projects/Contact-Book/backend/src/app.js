@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import "dotenv/config";
 import { router as contactRoutes } from "./routes/contact.routes.js";
+import { router as userRouter } from "./routes/user.routes.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(
   })
 );
 
+app.use("/api/v1/users", userRouter);
 app.use("/api/v1/contacts", contactRoutes);
 
 app.get("/", (req, res) => {
