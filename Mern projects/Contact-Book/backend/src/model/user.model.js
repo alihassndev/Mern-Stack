@@ -13,10 +13,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    confirmPassword: {
-      type: String,
-      required: true,
-    },
   },
   { timestamps: true }
 );
@@ -27,7 +23,6 @@ userSchema.pre("save", async function (next) {
   }
 
   this.password = await bcrypt.hash(this.password, 10);
-  this.confirmPassword = await bcrypt.hash(this.confirmPassword, 10);
   next();
 });
 
@@ -35,7 +30,7 @@ userSchema.methods.generateToken = async function () {
   return await jwt.sign(
     {
       id: this._id,
-      username,
+      username: this.username,
     },
     process.env.TOKEN_SECRET
   );

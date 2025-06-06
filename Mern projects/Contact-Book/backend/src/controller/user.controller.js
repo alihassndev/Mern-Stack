@@ -28,7 +28,6 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     username,
     password,
-    confirmPassword,
   });
 
   if (!user) {
@@ -61,7 +60,7 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   }
 
-  const token = await User.generateToken();
+  const token = await user.generateToken();
 
   if (!token) {
     return res
