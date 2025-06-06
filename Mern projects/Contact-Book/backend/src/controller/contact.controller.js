@@ -14,7 +14,7 @@ const createContact = asyncHandler(async (req, res) => {
 
   console.log(value);
 
-  const contact = await Contact.create(value);
+  const contact = await Contact.create({ ...value, user: req.user._id });
 
   if (!contact) {
     return res
@@ -28,23 +28,33 @@ const createContact = asyncHandler(async (req, res) => {
 });
 
 const updateContact = asyncHandler(async (req, res) => {
-  const { error, value } = contactSchema.validate(req.body);
+  const id = req.params.id;
+  const { name, email, phone } = req.body;
 
-  if (error) {
-    return res
-      .status(400)
-      .json({ success: false, message: `Error: ${error.message}` });
+  // If none of the fields are provided
+  if (!name && !email && !phone) {
+    return res.status(400).json({
+      success: false,
+      message: "At least one field (name, email, phone) must be provided",
+    });
   }
 
-  const contact = await Contact.findOne({ _id: value._id });
+  const contact = await Contact.findById(id);
 
   if (!contact) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Invalid contact request ..." });
+    return res.status(404).json({
+      success: false,
+      message: "Invalid contact request ...",
+    });
   }
 
-  const updatedContact = await Contact.findByIdAndUpdate(value._id, value, {
+  const updatedFields = {};
+
+  if (name !== undefined && name !== "") updatedFields.name = name;
+  if (email !== undefined && email !== "") updatedFields.email = email;
+  if (phone !== undefined && phone !== "") updatedFields.phone = phone;
+
+  const updatedContact = await Contact.findByIdAndUpdate(id, updatedFields, {
     new: true,
   });
 
@@ -95,25 +105,21 @@ const deleteContact = asyncHandler(async (req, res) => {
     .json({ success: true, message: "Contact deleted successfully ..." });
 });
 
-const searchContacts = asyncHandler(async (req, res) => {
-  const search = req.query.query;
+const searchContact = asyncHandler(async (req, res) => {
+  const { name } = req.body;
 
-  if (!search) {
+  if (!name) {
     return res
       .status(400)
       .json({ success: false, message: "Search query is required" });
   }
 
   const contacts = await Contact.find({
-    $or: [
-      { name: { $regex: search, $options: "i" } },
-      { phone: { $regex: search, $options: "i" } },
-    ],
-  });
+    name: { $regex: name, $options: "i" },
+  }).populate("user");
 
   return res.status(200).json({
     success: true,
-    message: "Search results",
     contacts,
   });
 });
@@ -123,5 +129,5 @@ export {
   updateContact,
   deleteContact,
   getAllContact,
-  searchContacts,
+  searchContact,
 };

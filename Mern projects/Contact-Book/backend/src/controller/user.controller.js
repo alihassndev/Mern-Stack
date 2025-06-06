@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { User } from "../model/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -60,6 +61,14 @@ const loginUser = asyncHandler(async (req, res) => {
     });
   }
 
+  const isPasswordCorrect = bcrypt.compare(password, user.password);
+
+  if (!isPasswordCorrect) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Password is in correct ..." });
+  }
+
   const token = await user.generateToken();
 
   if (!token) {
@@ -73,7 +82,7 @@ const loginUser = asyncHandler(async (req, res) => {
     secure: true,
   };
 
-  res.cookies("token", token, options);
+  res.cookie("token", token, options);
   return res
     .status(200)
     .json({ success: true, message: "login successfully ..." });

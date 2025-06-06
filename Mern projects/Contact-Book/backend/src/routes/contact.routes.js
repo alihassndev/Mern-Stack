@@ -3,17 +3,17 @@ import {
   createContact,
   deleteContact,
   getAllContact,
-  searchContacts,
+  searchContact,
   updateContact,
 } from "../controller/contact.controller.js";
-import { VerifyJWT } from "../middleware/auth.middleware.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.route("/create").post(VerifyJWT, createContact);
-router.route("/update").put(VerifyJWT, updateContact);
-router.route("/delete/:id").delete(VerifyJWT, deleteContact);
-router.route("/get-all-contacts").get(VerifyJWT, getAllContact);
-router.route("/search").get(VerifyJWT, searchContacts);
+router.route("/create").post(verifyJWT, createContact);
+router.route("/update/:id").put(verifyJWT, updateContact);
+router.route("/delete/:id").delete(verifyJWT, deleteContact);
+router.route("/").get(verifyJWT, getAllContact);
+router.route("/search").get(verifyJWT, searchContact);
 
 export { router };
