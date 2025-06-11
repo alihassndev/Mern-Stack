@@ -10,7 +10,7 @@ const createTodo = asyncHandler(async (req, res) => {
       .json({ success: false, message: "All fields are required ..." });
   }
 
-  const existingTodo = await Todo.find({ title });
+  const existingTodo = await Todo.findOne({ title });
 
   if (existingTodo) {
     return res
@@ -97,7 +97,7 @@ const getTodo = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json({ success: true, message: "Todo fetched successfully." });
+    .json({ success: true, message: "Todo fetched successfully.", todo });
 });
 
 const getAllTodos = asyncHandler(async (req, res) => {
@@ -113,7 +113,7 @@ const getAllTodos = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json({ success: false, message: "All todos fetched successfully." });
+    .json({ success: true, message: "All todos fetched successfully.", todos });
 });
 
 export { createTodo, updateTodo, deleteTodo, getTodo, getAllTodos };

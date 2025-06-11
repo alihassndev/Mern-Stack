@@ -8,17 +8,17 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
   if (!token) {
     return res
       .status(401)
-      .json({ success: false, message: "unauthorized access ..." });
+      .json({ success: false, message: "Unauthorized access ..." });
   }
 
   const decode = jwt.verify(token, process.env.TOKEN_SECRET);
 
-  const user = await User.findById({ _id: decode?.id }).select("-password");
+  const user = await User.findById(decode?.id).select("-password");
 
   if (!user) {
     return res
       .status(404)
-      .json({ success: false, message: "user not found ..." });
+      .json({ success: false, message: "User not found ..." });
   }
 
   req.user = user;

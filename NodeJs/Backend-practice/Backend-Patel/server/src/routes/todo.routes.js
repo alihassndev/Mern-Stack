@@ -6,13 +6,14 @@ import {
   getTodo,
   updateTodo,
 } from "../controller/todo.controller.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.route("/create").post(createTodo);
-router.route("/update").put(updateTodo);
-router.route("/delete").delete(deleteTodo);
-router.route("/todo/:id").get(getTodo);
-router.route("/todos").get(getAllTodos);
+router.route("/create").post(verifyJWT, createTodo);
+router.route("/update/:id").put(verifyJWT, updateTodo);
+router.route("/delete/:id").delete(verifyJWT, deleteTodo);
+router.route("/todo/:id").get(verifyJWT, getTodo);
+router.route("/todos").get(verifyJWT, getAllTodos);
 
 export default router;

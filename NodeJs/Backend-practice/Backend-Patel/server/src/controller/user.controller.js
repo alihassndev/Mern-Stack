@@ -10,7 +10,7 @@ const registerUser = asyncHandler(async (req, res) => {
       .json({ success: false, message: "All fields are required ..." });
   }
 
-  const existingUser = await User.find({
+  const existingUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
@@ -42,7 +42,7 @@ const loginUser = asyncHandler(async (req, res) => {
       .json({ success: false, message: "All fields are required ..." });
   }
 
-  const user = await User.find({ email });
+  const user = await User.findOne({ email });
 
   if (!user) {
     return res
@@ -50,9 +50,9 @@ const loginUser = asyncHandler(async (req, res) => {
       .json({ success: false, message: "user not found ..." });
   }
 
-  const isPasswordCorrect = user.isPasswordCorrect;
+  const isPasswordValid = await user.isPasswordCorrect(password);
 
-  if (!isPasswordCorrect) {
+  if (!isPasswordValid) {
     return res
       .status(400)
       .json({ success: false, message: "Password in incorrect ..." });
@@ -71,14 +71,15 @@ const loginUser = asyncHandler(async (req, res) => {
     secure: true,
   };
 
+  res.cookie("token", token, options);
+
   return res
     .status(200)
-    .cookie("token", token, options)
     .json({ success: true, message: "User login successfully ..." });
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  const token = req.cookies.token; // fixed
+  const token = req.cookies.token;
 
   if (!token) {
     return res
@@ -86,12 +87,12 @@ const logoutUser = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Token not found ..." });
   }
 
-  const options = {
+  res.clearCookie("token", {
     httpOnly: true,
     secure: true,
-  };
-
-  res.clearCookie("token", options);
+    sameSite: "Strict",
+    path: "/",
+  });
 
   return res
     .status(200)
