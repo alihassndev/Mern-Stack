@@ -5,7 +5,7 @@ import "dotenv/config";
 
 const userSchema = new mongoose.Schema(
   {
-    fullname: {
+    username: {
       type: String,
       required: true,
     },
@@ -39,6 +39,10 @@ userSchema.methods.generateToken = async function () {
     },
     process.env.TOKEN_SECRET
   );
+};
+
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
 };
 
 export const User = mongoose.model("User", userSchema);
