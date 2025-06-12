@@ -1,11 +1,21 @@
-import { Button } from "./components/ui/button";
+import { createBrowserRouter } from "react-router-dom";
+import Login from "./pages/Login";
+import { RouterProvider } from "react-router";
+import Home from "./pages/Home";
+
+const appRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+]);
 
 function App() {
-  return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      <Button>Lets build todo app 🔥</Button>
-    </div>
-  );
+  return <RouterProvider router={appRouter} />;
 }
 
 export default App;
