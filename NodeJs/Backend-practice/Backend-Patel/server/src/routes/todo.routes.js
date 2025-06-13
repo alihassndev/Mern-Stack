@@ -14,6 +14,6 @@ router.route("/create").post(verifyJWT, createTodo);
 router.route("/update/:id").put(verifyJWT, updateTodo);
 router.route("/delete/:id").delete(verifyJWT, deleteTodo);
 router.route("/todo/:id").get(verifyJWT, getTodo);
-router.route("/todos").get(verifyJWT, getAllTodos);
+router.route("/").get(verifyJWT, getAllTodos);
 
 export default router;

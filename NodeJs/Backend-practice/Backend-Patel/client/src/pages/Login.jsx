@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -29,6 +31,7 @@ const Login = () => {
 
       if (res.data.success) {
         toast.success(res.data.message);
+        navigate("/");
       } else {
         toast.error(res.data.message || "Login failed");
       }
