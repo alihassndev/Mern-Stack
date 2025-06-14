@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import cors from "cors";
 import userRouter from "./routes/user.routes.js";
+import expenseRouter from "./routes/expense.routes.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(
 );
 
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/expenses", expenseRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello i am working ...");
