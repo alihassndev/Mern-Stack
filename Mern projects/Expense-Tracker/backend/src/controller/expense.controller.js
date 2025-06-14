@@ -126,10 +126,130 @@ const deleteExpense = asyncHandler(async (req, res) => {
     .json({ success: true, message: "Expense deleted successfully ..." });
 });
 
+const getMonthlyStats = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const stats = await Expense.aggregate([
+    {
+      $match: { user: userId },
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$date" },
+          month: { $month: "$date" },
+        },
+        totalSpent: { $sum: "$amount" },
+      },
+    },
+    {
+      $sort: { "_id.year": -1, "_id.month": -1 },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: {
+          $concat: [
+            { $toString: "$_id.year" },
+            "-",
+            {
+              $cond: [
+                { $lt: ["$_id.month", 10] },
+                { $concat: ["0", { $toString: "$_id.month" }] },
+                { $toString: "$_id.month" },
+              ],
+            },
+          ],
+        },
+        totalSpent: 1,
+      },
+    },
+  ]);
+
+  return res
+    .status(200)
+    .json({ success: true, message: "Monthly stats fetched", stats });
+});
+
+const getCategoryStats = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const stats = await Expense.aggregate([
+    { $match: { user: userId } },
+    {
+      $group: {
+        _id: "$category",
+        totalSpent: { $sum: "$amount" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        category: "$_id",
+        totalSpent: 1,
+      },
+    },
+    {
+      $sort: { totalSpent: -1 },
+    },
+  ]);
+
+  return res.status(200).json({
+    success: true,
+    message: "Category-wise stats fetched",
+    stats,
+  });
+});
+
+const getSpecificExpenses = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { category, start, end, search, page = 1, limit = 10 } = req.query;
+
+  const filters = { user: userId };
+
+  // Category filter
+  if (category) {
+    filters.category = category;
+  }
+
+  // Date range filter
+  if (start || end) {
+    filters.date = {};
+    if (start) filters.date.$gte = new Date(start);
+    if (end) filters.date.$lte = new Date(end);
+  }
+
+  // Title search filter
+  if (search) {
+    filters.title = { $regex: search, $options: "i" }; // case-insensitive
+  }
+
+  // Pagination setup
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+
+  const totalExpenses = await Expense.countDocuments(filters);
+  const expenses = await Expense.find(filters)
+    .sort({ date: -1 }) // recent first
+    .skip(skip)
+    .limit(parseInt(limit));
+
+  return res.status(200).json({
+    success: true,
+    message: "Expenses fetched with filters",
+    total: totalExpenses,
+    page: parseInt(page),
+    limit: parseInt(limit),
+    expenses,
+  });
+});
+
 export {
   createExpense,
   deleteExpense,
   updateExpense,
   getExpense,
   getAllExpenses,
+  getMonthlyStats,
+  getCategoryStats,
+  getSpecificExpenses,
 };
