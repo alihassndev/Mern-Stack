@@ -29,7 +29,7 @@ const createPost = asyncHandler(async (req, res) => {
     .json({ success: true, message: "post created successfully ..." });
 });
 
-const getAllPosts = asyncHandler(async (req, res) => {
+const getUserPosts = asyncHandler(async (req, res) => {
   const user = req.user;
 
   if (!user) {
@@ -40,23 +40,27 @@ const getAllPosts = asyncHandler(async (req, res) => {
 
   const posts = await Post.find({ author: user._id });
 
-  if (!posts) {
-    return res
-      .status(404)
-      .json({ success: false, message: "posts not found ..." });
-  }
+  return res.status(200).json({
+    success: true,
+    message: `${posts.length} posts fetched successfully ...`,
+    posts,
+  });
+});
+
+const getAllPosts = asyncHandler(async (req, res) => {
+  const allPosts = await Post.find();
 
   return res.status(200).json({
     success: true,
-    message: "All posts fetched successfully ...",
-    posts,
+    message: `${allPosts.length} posts found ...`,
+    allPosts,
   });
 });
 
 const getSinglePost = asyncHandler(async (req, res) => {
   const id = req.params.id;
 
-  const post = await Post.findOne(id);
+  const post = await Post.findById(id);
 
   if (!post) {
     return res
@@ -66,14 +70,14 @@ const getSinglePost = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json({ success: true, message: "post fetched successfully ..." });
+    .json({ success: true, message: "post fetched successfully ...", post });
 });
 
 const updatePost = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const { title, content } = req.body;
 
-  const post = await Post.findOne(id);
+  const post = await Post.findById(id);
 
   if (!post) {
     return res
@@ -85,11 +89,13 @@ const updatePost = asyncHandler(async (req, res) => {
   if (title) updatedObject.title = title;
   if (content) updatedObject.content = content;
 
-  const updatedPost = await Post.findByIdAndUpdate(
-    { _id: id, author: post.author },
-    updatedObject,
-    { new: true }
-  );
+  if (String(post.author) !== String(req.user._id)) {
+    return res.status(403).json({ success: false, message: "Unauthorized" });
+  }
+
+  const updatedPost = await Post.findByIdAndUpdate(id, updatedObject, {
+    new: true,
+  });
 
   if (!updatedPost) {
     return res
@@ -99,7 +105,11 @@ const updatePost = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json({ success: true, message: "post updated successfully ..." });
+    .json({
+      success: true,
+      message: "post updated successfully ...",
+      updatedPost,
+    });
 });
 
 const deletePost = asyncHandler(async (req, res) => {
@@ -120,8 +130,9 @@ const deletePost = asyncHandler(async (req, res) => {
 
 const likePost = asyncHandler(async (req, res) => {
   const id = req.params.id;
+  const userId = req.user._id;
 
-  const post = await Post.findOne({ _id: id });
+  const post = await Post.findOne({ _id: id }).populate("author", "name");
 
   if (!post) {
     return res
@@ -129,11 +140,11 @@ const likePost = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Post not found ..." });
   }
 
-  if (post.likes.includes(id)) {
-    post.likes.pull(id);
+  if (post.likes.includes(userId)) {
+    post.likes.pull(userId);
   } else {
-    post.likes.push(id);
-    post.dislikes.pull(id);
+    post.likes.push(userId);
+    post.dislikes.pull(userId);
   }
 
   await post.save({ validateBeforeSave: false });
@@ -145,8 +156,9 @@ const likePost = asyncHandler(async (req, res) => {
 
 const dislikePost = asyncHandler(async (req, res) => {
   const id = req.params.id;
+  const userId = req.user._id;
 
-  const post = await Post.findOne({ _id: id });
+  const post = await Post.findOne({ _id: id }).populate("author", "name");
 
   if (!post) {
     return res
@@ -154,14 +166,14 @@ const dislikePost = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Post not found ..." });
   }
 
-  if (post.dislikes.includes(id)) {
-    post.dislikes.pull(id);
+  if (post.dislikes.includes(userId)) {
+    post.dislikes.pull(userId);
   } else {
-    post.dislikes.push(id);
-    post.likes.pull(id);
+    post.dislikes.push(userId);
+    post.likes.pull(userId);
   }
 
-  post.save({ validateBeforeSave: false });
+  await post.save({ validateBeforeSave: false });
 
   return res
     .status(200)
@@ -170,10 +182,11 @@ const dislikePost = asyncHandler(async (req, res) => {
 
 export {
   createPost,
-  getAllPosts,
+  getUserPosts,
   getSinglePost,
   updatePost,
   deletePost,
   likePost,
   dislikePost,
+  getAllPosts,
 };
