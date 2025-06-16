@@ -118,4 +118,62 @@ const deletePost = asyncHandler(async (req, res) => {
     .json({ success: true, message: "Post deleted successfully ..." });
 });
 
-export { createPost, getAllPosts, getSinglePost, updatePost, deletePost };
+const likePost = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+
+  const post = await Post.findOne({ _id: id });
+
+  if (!post) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Post not found ..." });
+  }
+
+  if (post.likes.includes(id)) {
+    post.likes.pull(id);
+  } else {
+    post.likes.push(id);
+    post.dislikes.pull(id);
+  }
+
+  await post.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json({ success: true, message: "Post liked/disliked ...", post });
+});
+
+const dislikePost = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+
+  const post = await Post.findOne({ _id: id });
+
+  if (!post) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Post not found ..." });
+  }
+
+  if (post.dislikes.includes(id)) {
+    post.dislikes.pull(id);
+  } else {
+    post.dislikes.push(id);
+    post.likes.pull(id);
+  }
+
+  post.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json({ success: true, message: "Post disliked/liked ...", post });
+});
+
+export {
+  createPost,
+  getAllPosts,
+  getSinglePost,
+  updatePost,
+  deletePost,
+  likePost,
+  dislikePost,
+};
