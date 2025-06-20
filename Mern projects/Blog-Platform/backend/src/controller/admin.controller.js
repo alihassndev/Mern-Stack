@@ -4,115 +4,65 @@ import { User } from "../model/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const allUsers = asyncHandler(async (req, res) => {
-  const user = req.user;
-
-  if (user.role !== "admin") {
-    return res
-      .status(403)
-      .json({ success: false, message: "unauthorized access ..." });
-  }
-
   const users = await User.find().select("-password");
-
-  return res
-    .status(200)
-    .json({ success: true, message: `${users.length} users found`, users });
+  res.status(200).json({ success: true, users });
 });
 
 const singleUser = asyncHandler(async (req, res) => {
-  const id = req.params.id;
-
-  const user = await User.findById(id).select("-password");
+  const user = await User.findById(req.params.id).select("-password");
 
   if (!user) {
-    return res
-      .status(404)
-      .json({ success: false, message: "User not found ..." });
+    return res.status(404).json({ success: false, message: "User not found" });
   }
 
-  return res
-    .status(200)
-    .json({ success: true, message: "User found ...", user });
+  res.status(200).json({ success: true, user });
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
-  const id = req.params.id;
+  const user = await User.findByIdAndDelete(req.params.id);
 
-  const deletedUser = await User.findByIdAndDelete(id);
-
-  if (!deletedUser) {
-    return res
-      .status(404)
-      .json({ success: false, message: "User not found ..." });
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
   }
 
-  return res
-    .status(200)
-    .json({ success: true, message: "User deleted successfully ..." });
+  res.status(200).json({ success: true, message: "User deleted successfully" });
 });
 
 const allPosts = asyncHandler(async (req, res) => {
-  const user = req.user;
-
-  if (!user.role === "admin") {
-    return res
-      .status(403)
-      .json({ success: false, message: "Uauthorized access ..." });
-  }
-
-  const posts = await Post.find();
-
-  return res
-    .status(200)
-    .json({ success: true, message: `${posts.length} posts found ...` });
+  const posts = await Post.find().populate("author", "name email");
+  res.status(200).json({ success: true, posts });
 });
 
 const deletePost = asyncHandler(async (req, res) => {
-  const id = req.params.id;
+  const post = await Post.findById(req.params.id);
 
-  const deletedPost = await Post.findByIdAndDelete(id);
-
-  if (!deletePost) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Post not found ..." });
+  if (!post) {
+    return res.status(404).json({ success: false, message: "Post not found" });
   }
 
-  return res
-    .status(200)
-    .json({ success: true, message: "Post deleted successfully ..." });
+  // Trigger cascade delete
+  await post.remove();
+
+  res.status(200).json({ success: true, message: "Post deleted by admin" });
 });
 
 const allComments = asyncHandler(async (req, res) => {
-  const id = req.params.id; // this is post id
-
-  const comments = await Comment.findOne({ post: id });
-
-  if (!comments) {
-    return res
-      .status(404)
-      .json({ success: false, message: "comments not found ..." });
-  }
-
-  return res
-    .status(200)
-    .json({ success: true, message: `${comments.length} comments found ...` });
+  const comments = await Comment.find()
+    .populate("author", "name email")
+    .populate("post", "title");
+  res.status(200).json({ success: true, comments });
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
-  const id = req.params.id; // comment id
+  const comment = await Comment.findByIdAndDelete(req.params.id);
 
-  const deletedComment = await Comment.findByIdAndDelete(id);
-
-  if (!deleteComment) {
+  if (!comment) {
     return res
       .status(404)
-      .json({ success: false, message: "Comment not found ..." });
+      .json({ success: false, message: "Comment not found" });
   }
 
-  return res
-    .status(200)
-    .json({ success: true, message: "Comment deleted successfully ..." });
+  res.status(200).json({ success: true, message: "Comment deleted by admin" });
 });
 
 export {

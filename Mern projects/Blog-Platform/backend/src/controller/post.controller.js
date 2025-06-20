@@ -103,25 +103,23 @@ const updatePost = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Error in updating post ..." });
   }
 
-  return res
-    .status(200)
-    .json({
-      success: true,
-      message: "post updated successfully ...",
-      updatedPost,
-    });
+  return res.status(200).json({
+    success: true,
+    message: "post updated successfully ...",
+    updatedPost,
+  });
 });
 
 const deletePost = asyncHandler(async (req, res) => {
   const id = req.params.id;
+  const post = await Post.findById(id);
 
-  const deletedPost = await Post.findByIdAndDelete(id);
-
-  if (!deletedPost) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Post not found ..." });
+  if (!post) {
+    return res.status(404).json({ success: false, message: "Post not found" });
   }
+
+  // Trigger cascade delete
+  await post.remove();
 
   return res
     .status(200)
