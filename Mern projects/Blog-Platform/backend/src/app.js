@@ -5,6 +5,7 @@ import "dotenv/config";
 import authRouter from "./routes/auth.routes.js";
 import postRouter from "./routes/post.routes.js";
 import commentRouter from "./routes/comment.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/comments", commentRouter);
+app.use("/api/v1/admin", adminRouter);
 
 app.get("/", (req, res) => {
   res.send("Working perfectly ...");

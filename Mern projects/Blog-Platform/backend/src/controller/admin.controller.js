@@ -3,19 +3,19 @@ import { Post } from "../model/post.model.js";
 import { User } from "../model/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-const allUsers = asyncHandler(async (req, res) => {
+const getAllUsers = asyncHandler(async (req, res) => {
   const users = await User.find().select("-password");
-  res.status(200).json({ success: true, users });
+  res.status(200).json({ success: true, users, message: "All users fetched" });
 });
 
-const singleUser = asyncHandler(async (req, res) => {
+const getUserById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id).select("-password");
 
   if (!user) {
     return res.status(404).json({ success: false, message: "User not found" });
   }
 
-  res.status(200).json({ success: true, user });
+  res.status(200).json({ success: true, user, message: "User found" });
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
@@ -28,12 +28,12 @@ const deleteUser = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: "User deleted successfully" });
 });
 
-const allPosts = asyncHandler(async (req, res) => {
+const getAllPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find().populate("author", "name email");
-  res.status(200).json({ success: true, posts });
+  res.status(200).json({ success: true, posts, message: "All posts fetched" });
 });
 
-const deletePost = asyncHandler(async (req, res) => {
+const deletePostByAdmin = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
 
   if (!post) {
@@ -46,14 +46,18 @@ const deletePost = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: "Post deleted by admin" });
 });
 
-const allComments = asyncHandler(async (req, res) => {
+const getAllComments = asyncHandler(async (req, res) => {
   const comments = await Comment.find()
     .populate("author", "name email")
     .populate("post", "title");
-  res.status(200).json({ success: true, comments });
+  res.status(200).json({
+    success: true,
+    comments,
+    message: "All comments fetched successfully",
+  });
 });
 
-const deleteComment = asyncHandler(async (req, res) => {
+const deleteCommentByAdmin = asyncHandler(async (req, res) => {
   const comment = await Comment.findByIdAndDelete(req.params.id);
 
   if (!comment) {
@@ -66,11 +70,11 @@ const deleteComment = asyncHandler(async (req, res) => {
 });
 
 export {
-  allUsers,
-  singleUser,
+  getAllUsers,
+  getUserById,
   deleteUser,
-  allPosts,
-  deletePost,
-  allComments,
-  deleteComment,
+  getAllPosts,
+  deletePostByAdmin,
+  getAllComments,
+  deleteCommentByAdmin,
 };

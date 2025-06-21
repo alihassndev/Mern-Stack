@@ -1,6 +1,6 @@
 import express from "express";
-import { protect } from "../middlewares/authMiddleware.js";
-import { authorizeRoles } from "../middlewares/authorizeRole.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
+import { authorizeRoles } from "../middleware/role.middleware.js";
 import {
   getAllUsers,
   getUserById,
@@ -9,11 +9,11 @@ import {
   deletePostByAdmin,
   getAllComments,
   deleteCommentByAdmin,
-} from "../controllers/admin.controller.js";
+} from "../controller/admin.controller.js";
 
 const router = express.Router();
 
-router.use(protect, authorizeRoles("admin"));
+router.use(verifyJWT, authorizeRoles("admin"));
 
 router.get("/users", getAllUsers);
 router.get("/users/:id", getUserById);
