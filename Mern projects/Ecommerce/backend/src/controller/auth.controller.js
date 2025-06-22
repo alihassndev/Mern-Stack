@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { User } from "../model/user.model.js";
 import bcrypt from "bcrypt";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const register = asyncHandler(async (req, res) => {
   const { fullname, email, password, role } = req.body;
@@ -121,7 +122,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: "User not found." });
   }
 
-  user.password = await bcrypt.hash(newPassword, 10);
+  user.password = newPassword;
 
   await user.save({
     validateBeforeSave: false,
@@ -156,7 +157,7 @@ const changePassword = asyncHandler(async (req, res) => {
       .json({ success: false, message: "Please enter correct old password." });
   }
 
-  user.password = await bcrypt.hash(newPassword, 10);
+  user.password = newPassword;
 
   await user.save({ validateBeforeSave: false });
 
