@@ -4,6 +4,7 @@ import "dotenv/config";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/auth.routes.js";
 import productRouter from "./routes/admin.routes.js";
+import cartRouter from "./routes/cart.routes.js";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(
 
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
+app.use("/api/carts", cartRouter);
 
 app.get("/", (req, res) => {
   res.send("Working fine ...");

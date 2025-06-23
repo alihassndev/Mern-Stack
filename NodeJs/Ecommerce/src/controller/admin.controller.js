@@ -173,10 +173,83 @@ const getAllProducts = asyncHandler(async (req, res) => {
     .json({ success: true, message: `${products.length} products found.` });
 });
 
+const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!["processing", "shipped", "delivered"].includes(status)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid status value." });
+  }
+
+  const order = await Order.findById(id);
+
+  if (!order) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Order not found." });
+  }
+
+  order.status = status;
+  await order.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Order status updated.",
+    order,
+  });
+});
+
+const getAdminDashboard = asyncHandler(async (req, res) => {
+  const [userCount, orderCount, totalRevenue, ordersByStatus] =
+    await Promise.all([
+      User.countDocuments(),
+      Order.countDocuments(),
+      Order.aggregate([
+        { $group: { _id: null, total: { $sum: "$totalAmount" } } },
+      ]),
+      Order.aggregate([{ $group: { _id: "$status", count: { $sum: 1 } } }]),
+    ]);
+
+  res.status(200).json({
+    success: true,
+    stats: {
+      users: userCount,
+      orders: orderCount,
+      revenue: totalRevenue[0]?.total || 0,
+      statusSummary: ordersByStatus,
+    },
+  });
+});
+
+const searchProducts = asyncHandler(async (req, res) => {
+  const { keyword, category } = req.query;
+
+  const filter = {};
+  if (keyword) {
+    filter.name = { $regex: keyword, $options: "i" };
+  }
+  if (category) {
+    filter.category = category;
+  }
+
+  const products = await Product.find(filter);
+
+  res.status(200).json({
+    success: true,
+    count: products.length,
+    products,
+  });
+});
+
 export {
   createProduct,
   updateProduct,
   deleteProduct,
   getSingleProduct,
   getAllProducts,
+  updateOrderStatus,
+  getAdminDashboard,
+  searchProducts,
 };
