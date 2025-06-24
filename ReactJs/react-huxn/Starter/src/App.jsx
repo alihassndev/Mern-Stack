@@ -13,14 +13,20 @@
 // import StyleCard from "./components/StyleCard";
 // import ProfileCard from "./components/ProfileCard";
 // import IconComponent from "./components/IconComponent";
+// import Button from "./components/Button";
+// import StatesComponent from "./components/StatesComponent";
+// import Compo1 from "./components/Compo1";
 
-import Button from "./components/Button";
+import LocalStorage from "./components/LocalStorage";
 
 const App = () => {
   return (
     <>
       <div>
-        <Button />
+        <LocalStorage />
+        {/* <Compo1 /> */}
+        {/* <StatesComponent /> */}
+        {/* <Button /> */}
         {/* <IconComponent /> */}
         {/* <ProfileCard /> */}
         {/* <StyleCard /> */}
