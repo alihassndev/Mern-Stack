@@ -16,14 +16,22 @@
 // import Button from "./components/Button";
 // import StatesComponent from "./components/StatesComponent";
 // import Compo1 from "./components/Compo1";
+// import LocalStorage from "./components/LocalStorage";
+// import Todo from "./components/Todo";
+// import Shopping from "./components/Shopping";
+// import Portal from "./components/Portal";
 
-import LocalStorage from "./components/LocalStorage";
+import Switcher from "./components/Switcher";
 
 const App = () => {
   return (
     <>
       <div>
-        <LocalStorage />
+        <Switcher />
+        {/* <Portal /> */}
+        {/* <Shopping /> */}
+        {/* <Todo /> */}
+        {/* <LocalStorage /> */}
         {/* <Compo1 /> */}
         {/* <StatesComponent /> */}
         {/* <Button /> */}
