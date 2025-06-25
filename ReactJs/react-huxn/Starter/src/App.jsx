@@ -20,14 +20,27 @@
 // import Todo from "./components/Todo";
 // import Shopping from "./components/Shopping";
 // import Portal from "./components/Portal";
+// import Switcher from "./components/Switcher";
+// import EffectHook from "./components/EffectHook";
+// import ComponentA from "./components/prop-drilling/ComponentA";
+// import ComponentB from "./components/prop-drilling/ComponentB";
+// import RefHook from "./components/RefHook";
+// import Data from "./components/Custom-Hooks/Data";
 
-import Switcher from "./components/Switcher";
+import UniqueID from "./components/UniqueID";
 
 const App = () => {
   return (
     <>
       <div>
-        <Switcher />
+        <UniqueID />
+        {/* <Data /> */}
+        {/* <RefHook /> */}
+        {/* <ComponentB /> */}
+        {/* <ComponentA name={name} /> */}
+
+        {/* <EffectHook /> */}
+        {/* <Switcher /> */}
         {/* <Portal /> */}
         {/* <Shopping /> */}
         {/* <Todo /> */}
