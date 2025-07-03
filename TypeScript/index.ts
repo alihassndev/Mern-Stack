@@ -239,8 +239,93 @@ type myAge = number | string;
 let newAge: myAge = 12;
 newAge = "23";
 
-console.log(`Age: ${newAge}`);
+// console.log(`Age: ${newAge}`);
+
+const str: (number | string)[] = [12, 3, 3.2, "hello", "sialkot"];
+
+// console.log(str);
 
 // ==============================
 
-const srt: (number | string)[] = [12, 3];
+// Literal types
+// Always use let keyword when using this
+
+// String literals
+let color: "red" | "green" | "blue";
+color = "red";
+// color = "black"; // Error
+
+// -----------------------------
+
+// boolean literals
+let valid: true;
+valid = true;
+// valid = false // Error
+
+// -----------------------------
+
+// Number literals
+let number: 1 | 2 | 3;
+
+number = 3;
+// number=4 // Error
+
+// console.log(number);
+
+// ==============================
+
+// Tuples
+
+let myTuple: [string, number] = ["hello", 12];
+
+// destructuring an array
+let [first, second] = myTuple;
+
+first = "world";
+
+// console.log(`First -> ${first}`);
+// console.log(`Second -> ${second}`);
+
+// -----------------------------
+
+// type UserTuple = [id: number, name: string, isAdmin?: boolean, tags?: string[]];
+interface UserTuple {
+  id: number;
+  name: string;
+  isAdmin?: boolean;
+  tags?: string[];
+}
+
+// const user1: UserTuple = [1, "ali"];
+const user1: UserTuple = { id: 1, name: "ali" };
+const user2: UserTuple = {
+  id: 1,
+  name: "ali",
+  isAdmin: true,
+  tags: ["editor", "reviewer"],
+};
+
+// This will print like this -> "User 2 -> [object Object]"
+// console.log(`User 2 -> ${user2}`);
+
+// console.log(`User 1 -> ${JSON.stringify(user1)}`);
+// console.log(`User 2 -> ${JSON.stringify(user2)}`);
+
+// ==============================
+
+// Enum
+enum WeatherCondition {
+  Sunny,
+  Cloudy,
+  Rainy = "Rainy",
+  Snowy = "Snowy",
+}
+
+// const weather = WeatherCondition.Snowy;
+
+console.log(WeatherCondition);
+
+// console.log(WeatherCondition.Sunny); // output -> 0 (gets index)
+// console.log(WeatherCondition.Snowy); // output -> Snowy (gets assigned value)
+
+// ==============================
