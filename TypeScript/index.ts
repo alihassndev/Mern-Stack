@@ -179,6 +179,19 @@ const user: User = {
 // console.log(person);
 // console.log(user);
 
+// -------------------------
+
+// interface for a function
+interface MathOperation {
+  (x: number, y: number): number;
+}
+
+const addNum: MathOperation = (a, b) => a + b;
+const mulNum: MathOperation = (a, b) => a * b;
+
+console.log(addNum(2, 3));
+console.log(mulNum(2, 3));
+
 // ================ factory function ==================
 // function myUser(): { name: string; age: number; location: string } {
 //   return {
@@ -323,7 +336,7 @@ enum WeatherCondition {
 
 // const weather = WeatherCondition.Snowy;
 
-console.log(WeatherCondition);
+// console.log(WeatherCondition);
 
 // console.log(WeatherCondition.Sunny); // output -> 0 (gets index)
 // console.log(WeatherCondition.Snowy); // output -> Snowy (gets assigned value)
