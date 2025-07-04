@@ -189,8 +189,8 @@ interface MathOperation {
 const addNum: MathOperation = (a, b) => a + b;
 const mulNum: MathOperation = (a, b) => a * b;
 
-console.log(addNum(2, 3));
-console.log(mulNum(2, 3));
+// console.log(addNum(2, 3));
+// console.log(mulNum(2, 3));
 
 // ================ factory function ==================
 // function myUser(): { name: string; age: number; location: string } {
@@ -342,3 +342,199 @@ enum WeatherCondition {
 // console.log(WeatherCondition.Snowy); // output -> Snowy (gets assigned value)
 
 // ==============================
+
+// Simple function
+function printNum(value: number, defaultValue: number): [number, number] {
+  return [value, defaultValue];
+}
+
+function printStr(value: string, defaultValue: string): [string, string] {
+  return [value, defaultValue];
+}
+
+function printBoolean(
+  value: boolean,
+  defaultValue: boolean
+): [boolean, boolean] {
+  return [value, defaultValue];
+}
+
+// const n = printNum(1, 2);
+// const s = printStr("hello", "world");
+// const bool = printBoolean(true, false);
+
+// console.log(n);
+// console.log(s);
+// console.log(bool);
+
+// --------  Using Generic  ---------
+function printSome<T>(value: T, defaultValue: T): [T, T] {
+  return [value, defaultValue];
+}
+// function printSome<T, U>(value: T, defaultValue: U): [T, U] {
+//   return [value, defaultValue];
+// }
+
+interface Dog {
+  name: string;
+  breed: string;
+}
+
+const dog1 = printSome<Dog>(
+  { name: "shero", breed: "german" },
+  { name: "tiger", breed: "bulli" }
+);
+
+// console.log(dog1);
+
+// -----------------------------
+
+// Generics in TS
+function func1<T>(name: T): void {
+  console.log(`your name is: ${name}`);
+}
+function func2<T>(items: T[]): T[] {
+  return items;
+}
+
+// func1<string>("ali");
+
+const things = func2([1, 2, 3, 4, 5]);
+
+// console.log(things);
+
+// ------------------------------
+
+// Getting random key and value from an object of generic type
+
+function randomKeyValue<T>(obj: { [key: string]: T }): {
+  key: string;
+  value: T;
+} {
+  const keys = Object.keys(obj);
+  const randKey = keys[Math.floor(Math.random() * keys.length)];
+  return { key: randKey, value: obj[randKey] };
+}
+
+const stringObj = { a: "apple", b: "banana", c: "cherry" };
+const res1 = randomKeyValue<string>(stringObj);
+// console.log(res1);
+
+const numberObj = { one: 1, two: 2, three: 3 };
+const res2 = randomKeyValue<number>(numberObj);
+// console.log(res2);
+
+// -------------------------------
+
+function filterArray<T>(array: T[], condition: (item: T) => boolean): T[] {
+  return array.filter((item) => condition(item));
+}
+
+const numArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const evenNum = filterArray<number>(numArray, (num) => num % 2 === 0);
+// console.log(evenNum);
+
+const stringArray = ["apple", "banana", "cherry"];
+const shortArray = filterArray<string>(stringArray, (str) => str.length < 6);
+// console.log(shortArray);
+
+interface Fruit {
+  name: string;
+  color: string;
+}
+
+const fruits: Fruit[] = [
+  { name: "Apple", color: "Red" },
+  { name: "Banana", color: "Yellow" },
+  { name: "Cherry", color: "Red" },
+];
+
+const redFruit = filterArray<Fruit>(fruits, (fruit) => fruit.color === "Red");
+// console.log(redFruit);
+
+// ==============================
+
+// Generic function with nultiple values
+
+function reversePair<T, U>(val1: T, val2: U): [U, T] {
+  return [val2, val1];
+}
+
+const pair = reversePair<string, number>("hello", 12);
+
+// console.log(pair);
+
+// --------------------------------
+
+// Generic classes
+
+class Box<T> {
+  private content: T;
+
+  constructor(content: T) {
+    this.content = content;
+  }
+
+  getContent(): T {
+    return this.content;
+  }
+
+  setContent(newContent: T): void {
+    this.content = newContent;
+  }
+}
+
+const stringBox = new Box<string>("hello");
+// console.log(stringBox.getContent());
+
+stringBox.setContent("world");
+// console.log(stringBox.getContent());
+
+const numberBox = new Box<number>(12);
+// console.log(numberBox.getContent());
+
+numberBox.setContent(10);
+// console.log(numberBox.getContent());
+
+// ==============================
+
+// Type Narrowing and type gaurds
+type myType = string | number;
+
+function exampleFunction(value: myType): void {
+  if (typeof value === "string") {
+    console.log(value.toUpperCase());
+  } else {
+    console.log(value.toFixed(2));
+  }
+}
+
+// exampleFunction(12);
+// exampleFunction("hello world!");
+
+// ------------------------------
+class D {
+  bark() {
+    console.log("dog barks !");
+  }
+}
+
+class C {
+  meow() {
+    console.log("cat meows !");
+  }
+}
+
+function classTest(obj: D | C): void {
+  if (obj instanceof D) {
+    obj.bark();
+  } else {
+    obj.meow();
+  }
+}
+
+const o = new D();
+
+// classTest(o);
+
+// ------------------------------
