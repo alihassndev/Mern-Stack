@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import userRouter from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -10,7 +11,9 @@ app.use(cors({ origin: process.env.ORIGIN }));
 app.use(cookieParser);
 app.use(express.static("public"));
 
-app.get("/", (rea, res) => {
+app.use("/api/v1/users", userRouter);
+
+app.get("/", (req, res) => {
   res.send("App route is working fine ...");
 });
 
