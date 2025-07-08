@@ -6,8 +6,9 @@ import {
   changePassword,
   forgotPassword,
   resetPassword,
+  refreshAccessToken,
 } from "../controllers/auth.controller.js";
-import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -16,6 +17,8 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
+// auth.routes.js
+router.post("/refresh-token", refreshAccessToken);
 
 // Protected routes
 router.post("/logout", authMiddleware, logout);

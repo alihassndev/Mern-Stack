@@ -1,5 +1,5 @@
 import { User } from "../models/user.model.js";
-import asyncHandler from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { sendEmail } from "../utils/emailHandler.js";
 import crypto from "crypto";
 
@@ -8,7 +8,7 @@ const register = asyncHandler(async (req, res) => {
   const { name, email, password, role, location } = req.body;
 
   // Validation
-  if (!name || !email || !password || !role) {
+  if (!name || !email || !password || !location) {
     return res.status(400).json({
       success: false,
       message: "Name, email, password and role are required",
@@ -258,6 +258,54 @@ const resetPassword = asyncHandler(async (req, res) => {
   });
 });
 
+// auth.controller.js
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new Error("Unauthorized - No refresh token provided");
+  }
+
+  try {
+    const decoded = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    const user = await User.findById(decoded.id);
+
+    if (!user || incomingRefreshToken !== user.refreshToken) {
+      throw new Error("Invalid refresh token");
+    }
+
+    const newAccessToken = user.generateAccessToken();
+    const newRefreshToken = user.generateRefreshToken();
+
+    user.refreshToken = newRefreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", newAccessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json({
+        success: true,
+        accessToken: newAccessToken,
+        message: "Token refreshed successfully",
+      });
+  } catch (error) {
+    throw new Error(error.message || "Invalid refresh token");
+  }
+});
+
 export {
   register,
   login,
@@ -265,4 +313,5 @@ export {
   changePassword,
   forgotPassword,
   resetPassword,
+  refreshAccessToken,
 };
