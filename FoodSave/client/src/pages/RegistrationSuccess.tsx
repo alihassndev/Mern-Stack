@@ -4,14 +4,13 @@ import { useAuth } from "../contexts/AuthContext";
 import { Button } from "../components/ui/Button";
 
 export default function RegistrationSuccess() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) navigate("/register");
+    // Redirect if user isn't authenticated
+    if (!user) navigate("/register", { replace: true });
   }, [user, navigate]);
-
-  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -19,7 +18,7 @@ export default function RegistrationSuccess() {
         <div className="text-green-500 text-5xl mb-4">✓</div>
         <h1 className="text-2xl font-bold mb-4">Registration Successful!</h1>
         <p className="mb-6 text-gray-600">
-          Welcome, {user.name}! Your {user.role === "donor" ? "donor" : "NGO"}{" "}
+          Welcome, {user?.name}! Your {user?.role === "donor" ? "donor" : "NGO"}{" "}
           account is ready.
         </p>
         <Button onClick={() => navigate("/dashboard")} className="w-full">

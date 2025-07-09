@@ -38,7 +38,10 @@ export default function Register() {
 
   const onSubmit = async (data: FormData) => {
     clearError();
-    await registerUser(data);
+    const success = await registerUser(data);
+    if (success) {
+      navigate("/registration-success", { replace: true }); // Add replace option
+    }
   };
 
   return (

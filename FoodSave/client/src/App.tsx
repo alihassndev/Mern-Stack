@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-// import RegistrationSuccess from "./pages/RegistrationSuccess";
+import RegistrationSuccess from "./pages/RegistrationSuccess";
 import DashboardLayout from "./pages/dashboard/DashboardLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DonorDashboard from "./pages/dashboard/DonorDashboard";
@@ -14,10 +14,20 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Dashboard nested routes */}
+          {/* Protected routes */}
+          <Route
+            path="/registration-success"
+            element={
+              <ProtectedRoute>
+                <RegistrationSuccess />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/dashboard"
             element={
@@ -31,7 +41,9 @@ function App() {
             <Route path="admin" element={<AdminDashboard />} />
           </Route>
 
+          {/* Redirects */}
           <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
