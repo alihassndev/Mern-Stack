@@ -134,4 +134,47 @@ const generateTokens = async (userId) => {
   }
 };
 
-export { registerUser, loginUser, logoutUser };
+// Admin: Get all users
+const getAllUsers = asyncHandler(async (req, res) => {
+  if (req.user.role !== "admin") throw new ApiError(403, "Admin only");
+  const users = await User.find().select("-password -refreshToken");
+  return res.status(200).json(new ApiResponse(200, users, "All users fetched"));
+});
+
+// Admin: Get user by ID
+const getUserById = asyncHandler(async (req, res) => {
+  if (req.user.role !== "admin") throw new ApiError(403, "Admin only");
+  const user = await User.findById(req.params.id).select(
+    "-password -refreshToken"
+  );
+  if (!user) throw new ApiError(404, "User not found");
+  return res.status(200).json(new ApiResponse(200, user, "User fetched"));
+});
+
+// Admin: Update user
+const updateUser = asyncHandler(async (req, res) => {
+  if (req.user.role !== "admin") throw new ApiError(403, "Admin only");
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  }).select("-password -refreshToken");
+  if (!user) throw new ApiError(404, "User not found");
+  return res.status(200).json(new ApiResponse(200, user, "User updated"));
+});
+
+// Admin: Delete user
+const deleteUser = asyncHandler(async (req, res) => {
+  if (req.user.role !== "admin") throw new ApiError(403, "Admin only");
+  const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) throw new ApiError(404, "User not found");
+  return res.status(200).json(new ApiResponse(200, null, "User deleted"));
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+};

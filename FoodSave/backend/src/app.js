@@ -6,6 +6,8 @@ import { Server } from "socket.io";
 import userRouter from "./routes/user.routes.js";
 import foodDonationRouter from "./routes/foodDonation.routes.js";
 import pickupRouter from "./routes/pickup.routes.js";
+import guidelineRouter from "./routes/guideline.routes.js";
+import feedbackRouter from "./routes/feedback.routes.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -37,6 +39,8 @@ app.use(cookieParser());
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/donations", foodDonationRouter);
 app.use("/api/v1/pickups", pickupRouter);
+app.use("/api/v1/guidelines", guidelineRouter);
+app.use("/api/v1/feedback", feedbackRouter);
 
 // WebSocket events
 io.on("connection", (socket) => {
