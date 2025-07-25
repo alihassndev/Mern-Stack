@@ -8,63 +8,92 @@ import DonationsList from "./pages/DonationsList";
 import CreateDonation from "./pages/CreateDonation";
 import PickupRequests from "./pages/PickupRequests";
 import Guidelines from "./pages/Guidelines";
+import Profile from "./pages/Profile";
+import Toast from "./components/Toast";
+import { useState } from "react";
+import AdminDashboard from "./pages/AdminDashboard";
 
 // Protected route component
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   }
-  
+
   if (!user) {
     return <Navigate to="/signin" replace />;
   }
-  
+
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
   }
-  
+
   return children;
 };
 
 function App() {
+  const [toast, setToast] = useState({ message: "", type: "info" });
+  const showToast = (message, type = "info") => setToast({ message, type });
   return (
     <>
       <Navbar />
-
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ message: "", type: "info" })}
+      />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/signin" element={<Signin />} />
-        
-        <Route 
-          path="/donations" 
+        <Route path="/signup" element={<Signup showToast={showToast} />} />
+        <Route path="/signin" element={<Signin showToast={showToast} />} />
+        <Route
+          path="/donations"
           element={
             <ProtectedRoute>
-              <DonationsList />
+              <DonationsList showToast={showToast} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/donations/new" 
+        <Route
+          path="/donations/new"
           element={
             <ProtectedRoute allowedRoles={["donor"]}>
-              <CreateDonation />
+              <CreateDonation showToast={showToast} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/pickups" 
+        <Route
+          path="/pickups"
           element={
             <ProtectedRoute allowedRoles={["ngo"]}>
-              <PickupRequests />
+              <PickupRequests showToast={showToast} />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/guidelines" 
-          element={<Guidelines />} 
+        <Route
+          path="/guidelines"
+          element={<Guidelines showToast={showToast} />}
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile showToast={showToast} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboard showToast={showToast} />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </>
