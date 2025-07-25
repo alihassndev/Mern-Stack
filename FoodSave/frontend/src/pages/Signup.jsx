@@ -1,64 +1,119 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Signup = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    DOB: "",
+    role: "donor",
+  });
+  const [formError, setFormError] = useState("");
+  const { register, error } = useAuth();
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await register(formData);
+      navigate("/signin");
+    } catch (err) {
+      setFormError(err.response?.data?.message || "Registration failed");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <form
-        action={"/api/v1/users/register"}
-        method="POST"
+        onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-semibold mb-6 text-center">Register</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-center text-primary-700">Join FoodSave</h2>
+        
+        {(formError || error) && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+            {formError || error}
+          </div>
+        )}
 
         <input
           type="text"
           name="username"
           placeholder="Enter username"
-          className="w-full mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={formData.username}
+          onChange={handleChange}
+          className="input-field mb-4"
+          required
         />
 
         <input
           type="email"
           name="email"
           placeholder="Enter email"
-          className="w-full mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={formData.email}
+          onChange={handleChange}
+          className="input-field mb-4"
+          required
         />
 
         <input
           type="password"
           name="password"
           placeholder="Enter password"
-          className="w-full mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={formData.password}
+          onChange={handleChange}
+          className="input-field mb-4"
+          required
         />
 
-        <input
-          type="date"
-          name="DOB"
-          placeholder="Date of birth"
-          className="w-full mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-        />
-
-        <select
-          name="role"
-          className="w-full mb-6 px-4 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
-        >
-          <option value="Student">Student</option>
-          <option value="Professional">Professional</option>
-        </select>
-
-        <Link to={"/signin"}>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-1">Date of Birth</label>
           <input
-            type="submit"
-            value="Register"
-            className="w-full bg-indigo-600 text-white py-2 rounded-md cursor-pointer hover:bg-indigo-700 transition"
+            type="date"
+            name="DOB"
+            value={formData.DOB}
+            onChange={handleChange}
+            className="input-field"
+            required
           />
-        </Link>
+        </div>
 
-        <Link to={"/signin"}>
-          <div className="w-full my-5 border rounded-md p-3 border-gray-400 text-center hover:bg-blue-100 transition-all duration-300">
-            Already have account <span className="text-blue-600">Sign In</span>
-          </div>
-        </Link>
+        <div className="mb-6">
+          <label className="block text-gray-700 mb-1">I am a:</label>
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="input-field"
+            required
+          >
+            <option value="donor">Food Donor</option>
+            <option value="ngo">NGO / Food Bank</option>
+          </select>
+        </div>
+
+        <button 
+          type="submit"
+          className="btn btn-primary w-full mb-4"
+        >
+          Register
+        </button>
+
+        <div className="text-center">
+          <p className="text-gray-600 mb-2">Already have an account?</p>
+          <Link to="/signin" className="text-primary-600 hover:text-primary-800 font-medium">
+            Login
+          </Link>
+        </div>
       </form>
     </div>
   );
