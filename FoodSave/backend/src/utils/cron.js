@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { FoodDonation } from "../models/foodDonation.model.js";
+import { FoodDonation } from "../model/foodDonation.model.js";
 
 // Runs every hour
 cron.schedule("0 * * * *", async () => {

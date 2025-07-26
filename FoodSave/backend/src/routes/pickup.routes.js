@@ -4,7 +4,7 @@ import {
   updateRequestStatus,
   completeRequest,
   updateDeliveryLocation,
-} from "../controllers/pickup.controller.js";
+} from "../controller/pickup.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router();

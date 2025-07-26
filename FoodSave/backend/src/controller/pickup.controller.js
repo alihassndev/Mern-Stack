@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { PickupRequest } from "../models/pickupRequest.model.js"; // Standardized path
-import { FoodDonation } from "../models/foodDonation.model.js";
-import { User } from "../models/user.model.js";
+import { PickupRequest } from "../model/pickupRequest.model.js"; // Standardized path
+import { FoodDonation } from "../model/foodDonation.model.js";
+import { User } from "../model/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { sendNotification } from "../utils/notifier.js";

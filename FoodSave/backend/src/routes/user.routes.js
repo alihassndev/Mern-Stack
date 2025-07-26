@@ -7,7 +7,7 @@ import {
   getUserById,
   updateUser,
   deleteUser,
-} from "../controllers/user.controller.js";
+} from "../controller/user.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router();

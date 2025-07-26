@@ -1,16 +1,16 @@
 // utils/notifier.js
-import twilio from 'twilio';
-import nodemailer from 'nodemailer';
+import twilio from "twilio";
+import nodemailer from "nodemailer";
 
 // SMS (Twilio Free Tier - 1,000 SMS/month)
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+const twilioClient =
+  process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
+    ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+    : null;
 
 // Email (Nodemailer - Free with Gmail)
 const mailTransport = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -19,8 +19,8 @@ const mailTransport = nodemailer.createTransport({
 
 export const sendNotification = async ({ phone, email, message }) => {
   try {
-    // Try SMS first (Twilio)
-    if (phone) {
+    // Try SMS first (Twilio) - only if configured
+    if (phone && twilioClient) {
       await twilioClient.messages.create({
         body: `FoodSave: ${message}`,
         from: process.env.TWILIO_PHONE,
@@ -34,11 +34,11 @@ export const sendNotification = async ({ phone, email, message }) => {
       await mailTransport.sendMail({
         from: '"FoodSave" <noreply@foodsave.org>',
         to: email,
-        subject: 'FoodSave Notification',
+        subject: "FoodSave Notification",
         text: message,
       });
     }
   } catch (error) {
-    console.error('Notification failed:', error);
+    console.error("Notification failed:", error);
   }
 };

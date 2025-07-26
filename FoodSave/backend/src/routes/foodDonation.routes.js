@@ -3,9 +3,10 @@ import { verifyJWT } from "../middleware/auth.middleware.js";
 import {
   createFoodDonation,
   getDonations,
+  getDonationById,
   updateDonation,
   deleteDonation,
-} from "../controllers/foodDonation.controller.js";
+} from "../controller/foodDonation.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 
 const router = Router();

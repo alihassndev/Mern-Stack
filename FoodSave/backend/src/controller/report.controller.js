@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { FoodDonation } from "../models/foodDonation.model.js";
-import { PickupRequest } from "../models/pickupRequest.model.js";
+import { FoodDonation } from "../model/foodDonation.model.js";
+import { PickupRequest } from "../model/pickupRequest.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import PDFDocument from "pdfkit";
 
