@@ -169,6 +169,35 @@ const deleteUser = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, null, "User deleted"));
 });
 
+// Update user password
+const updatePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.params.id;
+  
+  // Check if user is authorized (admin or the user themselves)
+  if (req.user.role !== "admin" && req.user._id.toString() !== userId) {
+    throw new ApiError(403, "You are not authorized to update this user's password");
+  }
+  
+  // Find user
+  const user = await User.findById(userId);
+  if (!user) throw new ApiError(404, "User not found");
+  
+  // Verify current password
+  const isPasswordValid = await user.isPasswordCorrect(currentPassword);
+  if (!isPasswordValid) {
+    throw new ApiError(401, "Current password is incorrect");
+  }
+  
+  // Update password
+  user.password = newPassword;
+  await user.save();
+  
+  return res.status(200).json(
+    new ApiResponse(200, {}, "Password updated successfully")
+  );
+});
+
 export {
   registerUser,
   loginUser,
@@ -177,4 +206,5 @@ export {
   getUserById,
   updateUser,
   deleteUser,
+  updatePassword
 };
