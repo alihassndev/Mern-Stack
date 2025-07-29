@@ -458,7 +458,7 @@ const PickupRequests = ({ showToast }) => {
                   </div>
                 </div>
 
-    {pickup.status === "pending" && (
+                {pickup.status === "pending" && (
                   <div className="flex justify-end gap-3">
                     <button
                       onClick={() =>
@@ -521,3 +521,147 @@ const getStatusColor = (status) => {
 };
 
 export default PickupRequests;
+
+// Enhanced pickup request card
+const PickupRequestCard = ({ pickup, onStatusUpdate, onSubmitFeedback }) => {
+  const getStatusConfig = (status) => {
+    const configs = {
+      pending: {
+        bg: 'bg-yellow-50 border-yellow-200',
+        badge: 'bg-yellow-100 text-yellow-800',
+        icon: '⏳',
+        color: 'text-yellow-700'
+      },
+      accepted: {
+        bg: 'bg-green-50 border-green-200',
+        badge: 'bg-green-100 text-green-800',
+        icon: '✅',
+        color: 'text-green-700'
+      },
+      rejected: {
+        bg: 'bg-red-50 border-red-200',
+        badge: 'bg-red-100 text-red-800',
+        icon: '❌',
+        color: 'text-red-700'
+      },
+      completed: {
+        bg: 'bg-blue-50 border-blue-200',
+        badge: 'bg-blue-100 text-blue-800',
+        icon: '🎉',
+        color: 'text-blue-700'
+      }
+    };
+    return configs[status] || configs.pending;
+  };
+  
+  const statusConfig = getStatusConfig(pickup.status);
+  
+  return (
+    <div className={`rounded-xl border-2 ${statusConfig.bg} p-6 transition-all duration-300 hover:shadow-lg`}>
+      {/* Header */}
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">
+            {pickup.donation?.title || 'Food Pickup Request'}
+          </h3>
+          <div className="flex items-center space-x-3">
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusConfig.badge}`}>
+              <span className="mr-1">{statusConfig.icon}</span>
+              {pickup.status.charAt(0).toUpperCase() + pickup.status.slice(1)}
+            </span>
+            <span className="text-sm text-gray-500">
+              Requested {new Date(pickup.createdAt).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Details Grid */}
+      <div className="grid md:grid-cols-2 gap-4 mb-4">
+        <div className="space-y-3">
+          <div className="flex items-center text-sm">
+            <span className="mr-2">📅</span>
+            <span className="font-medium text-gray-700">Proposed Time:</span>
+            <span className="ml-2 text-gray-900">
+              {new Date(pickup.proposedPickupTime).toLocaleString()}
+            </span>
+          </div>
+          
+          {pickup.donation?.quantity && (
+            <div className="flex items-center text-sm">
+              <span className="mr-2">📊</span>
+              <span className="font-medium text-gray-700">Quantity:</span>
+              <span className="ml-2 text-gray-900">{pickup.donation.quantity}</span>
+            </div>
+          )}
+          
+          {pickup.donation?.category && (
+            <div className="flex items-center text-sm">
+              <span className="mr-2">🏷️</span>
+              <span className="font-medium text-gray-700">Category:</span>
+              <span className="ml-2 text-gray-900 capitalize">{pickup.donation.category}</span>
+            </div>
+          )}
+        </div>
+        
+        <div className="space-y-3">
+          {pickup.driver?.name && (
+            <div className="flex items-center text-sm">
+              <span className="mr-2">🚚</span>
+              <span className="font-medium text-gray-700">Driver:</span>
+              <span className="ml-2 text-gray-900">{pickup.driver.name}</span>
+            </div>
+          )}
+          
+          {pickup.driver?.contact && (
+            <div className="flex items-center text-sm">
+              <span className="mr-2">📞</span>
+              <span className="font-medium text-gray-700">Contact:</span>
+              <span className="ml-2 text-gray-900">{pickup.driver.contact}</span>
+            </div>
+          )}
+          
+          {pickup.completionTime && (
+            <div className="flex items-center text-sm">
+              <span className="mr-2">✅</span>
+              <span className="font-medium text-gray-700">Completed:</span>
+              <span className="ml-2 text-gray-900">
+                {new Date(pickup.completionTime).toLocaleString()}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Message */}
+      {pickup.message && (
+        <div className="bg-white/50 rounded-lg p-3 mb-4">
+          <p className="text-sm text-gray-700">
+            <span className="font-medium">Message:</span> {pickup.message}
+          </p>
+        </div>
+      )}
+      
+      {/* Action Buttons */}
+      <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-200">
+        {pickup.status === 'accepted' && (
+          <button
+            onClick={() => onStatusUpdate(pickup._id, 'completed')}
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-md active:scale-95"
+          >
+            ✅ Mark as Completed
+          </button>
+        )}
+        
+        {pickup.status === 'completed' && (
+          <button
+            onClick={() => onSubmitFeedback(pickup._id)}
+            className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-md active:scale-95"
+          >
+            ⭐ Leave Feedback
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};

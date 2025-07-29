@@ -7,11 +7,12 @@ const CreateDonation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    foodName: "",
+    title: "",
     description: "",
     quantity: "",
+    category: "meals",
     expiryDate: "",
-    pickupLocation: "",
+    address: "",
     images: null,
   });
 
@@ -37,11 +38,26 @@ const CreateDonation = () => {
 
     try {
       const data = new FormData();
-      data.append("foodName", formData.foodName);
+      data.append("title", formData.title);
       data.append("description", formData.description);
       data.append("quantity", formData.quantity);
+      data.append("category", formData.category);
       data.append("expiryDate", formData.expiryDate);
-      data.append("pickupLocation", formData.pickupLocation);
+      data.append("address", formData.address);
+      
+      // Add default coordinates (can be enhanced with geolocation later)
+      data.append("coordinates", JSON.stringify([0, 0]));
+      
+      // Add default pickup window (can be enhanced with time selection later)
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const dayAfter = new Date();
+      dayAfter.setDate(dayAfter.getDate() + 2);
+      
+      data.append("pickupWindow", JSON.stringify({
+        start: tomorrow.toISOString(),
+        end: dayAfter.toISOString()
+      }));
 
       if (formData.images) {
         for (let i = 0; i < formData.images.length; i++) {
@@ -49,13 +65,15 @@ const CreateDonation = () => {
         }
       }
 
-      await api.post("/donations", data, {
+      const response = await api.post("/donations", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      navigate("/donations");
+      if (response.data.success) {
+        navigate("/donations");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create donation");
     } finally {
@@ -76,16 +94,17 @@ const CreateDonation = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="foodName">
+            <label className="block text-gray-700 mb-2" htmlFor="title">
               Food Name *
             </label>
             <input
               type="text"
-              id="foodName"
-              name="foodName"
-              value={formData.foodName}
+              id="title"
+              name="title"
+              value={formData.title}
               onChange={handleChange}
-              className="input-field"
+              placeholder="Enter food name"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
               required
             />
           </div>
@@ -99,9 +118,11 @@ const CreateDonation = () => {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="input-field min-h-[100px]"
+              placeholder="Describe the food item"
+              rows="4"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
               required
-            ></textarea>
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -110,83 +131,97 @@ const CreateDonation = () => {
                 Quantity *
               </label>
               <input
-                type="text"
+                type="number"
                 id="quantity"
                 name="quantity"
                 value={formData.quantity}
                 onChange={handleChange}
-                placeholder="e.g., 5 kg, 3 boxes"
-                className="input-field"
+                placeholder="Enter quantity"
+                min="1"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-2" htmlFor="expiryDate">
-                Expiry Date *
+              <label className="block text-gray-700 mb-2" htmlFor="category">
+                Category *
               </label>
-              <input
-                type="date"
-                id="expiryDate"
-                name="expiryDate"
-                value={formData.expiryDate}
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
                 onChange={handleChange}
-                className="input-field"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                 required
-              />
+              >
+                <option value="fruits">🍎 Fruits</option>
+                <option value="vegetables">🥕 Vegetables</option>
+                <option value="bakery">🍞 Bakery</option>
+                <option value="meals">🍽️ Meals</option>
+                <option value="dairy">🥛 Dairy</option>
+                <option value="other">📦 Other</option>
+              </select>
             </div>
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="pickupLocation">
+            <label className="block text-gray-700 mb-2" htmlFor="expiryDate">
+              Expiry Date *
+            </label>
+            <input
+              type="date"
+              id="expiryDate"
+              name="expiryDate"
+              value={formData.expiryDate}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2" htmlFor="address">
               Pickup Location *
             </label>
             <input
               type="text"
-              id="pickupLocation"
-              name="pickupLocation"
-              value={formData.pickupLocation}
+              id="address"
+              name="address"
+              value={formData.address}
               onChange={handleChange}
-              className="input-field"
+              placeholder="Enter pickup address"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
               required
             />
           </div>
 
           <div className="mb-6">
             <label className="block text-gray-700 mb-2" htmlFor="images">
-              Images (Optional)
+              Food Images *
             </label>
             <input
               type="file"
               id="images"
               name="images"
               onChange={handleFileChange}
-              className="input-field"
-              accept="image/*"
               multiple
+              accept="image/*"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              required
             />
             <p className="text-sm text-gray-500 mt-1">
-              You can upload up to 3 images of the food (max 5MB each)
+              Upload multiple images of your food donation
             </p>
           </div>
 
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => navigate("/donations")}
-              className="btn btn-secondary"
-              disabled={loading}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={loading}
-            >
-              {loading ? "Creating..." : "Create Donation"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          >
+            {loading ? "Creating Donation..." : "Create Donation"}
+          </button>
         </form>
       </div>
     </div>

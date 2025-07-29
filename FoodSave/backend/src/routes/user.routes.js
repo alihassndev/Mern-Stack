@@ -8,7 +8,8 @@ import {
   getUserById,
   updateUser,
   deleteUser,
-  updatePassword
+  updatePassword,
+  refreshAccessToken // Add this
 } from "../controller/user.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 
@@ -26,5 +27,6 @@ router
   .delete(verifyJWT, deleteUser);
 
 router.route("/:id/password").put(verifyJWT, updatePassword);
+router.route("/refresh-token").post(refreshAccessToken);
 
 export default router;

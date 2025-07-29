@@ -29,6 +29,35 @@ const userSchema = new mongoose.Schema(
       enum: ["donor", "ngo", "admin"],
       default: "donor",
     },
+    // Add missing profile fields
+    fullName: {
+      type: String,
+      trim: true,
+    },
+    phone: {
+      type: String,
+      trim: true,
+    },
+    address: {
+      street: String,
+      city: String,
+      state: String,
+      zipCode: String,
+      country: { type: String, default: "India" }
+    },
+    // NGO specific fields
+    organizationName: {
+      type: String,
+      required: function() { return this.role === 'ngo'; }
+    },
+    registrationNumber: {
+      type: String,
+      required: function() { return this.role === 'ngo'; }
+    },
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
     refreshToken: { type: String },
   },
   { timestamps: true }

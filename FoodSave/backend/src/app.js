@@ -9,7 +9,8 @@ import pickupRouter from "./routes/pickup.routes.js";
 import guidelineRouter from "./routes/guideline.routes.js";
 import feedbackRouter from "./routes/feedback.routes.js";
 import reportRouter from "./routes/report.routes.js";
-import dotenv from "dotenv"; // Load dotenv package
+import { errorHandler } from "./middleware/errorHandler.js";
+import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
@@ -45,6 +46,9 @@ app.use("/api/v1/pickups", pickupRouter);
 app.use("/api/v1/guidelines", guidelineRouter);
 app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/reports", reportRouter);
+
+// Global error handling middleware (must be after all routes)
+app.use(errorHandler);
 
 // WebSocket events
 io.on("connection", (socket) => {

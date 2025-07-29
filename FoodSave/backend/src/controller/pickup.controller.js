@@ -71,22 +71,27 @@ const updateRequestStatus = asyncHandler(async (req, res) => {
 
   const request = await PickupRequest.findById(requestId)
     .populate("donation", "donor status title")
-    .populate("ngo", "phone email");
+    .populate("ngo", "phone email username");
 
   if (!request) throw new ApiError(404, "Request not found");
 
-  // Authorization
-  // if (!request.donation.donor.equals(req.user._id)) {
-  //   throw new ApiError(403, "Only the donor can process this request");
-  // }
+  // Authorization check - UNCOMMENT AND FIX
+  if (!request.donation.donor.equals(req.user._id)) {
+    throw new ApiError(403, "Only the donor can process this request");
+  }
 
   // Validate status transition
-  if (!["accepted", "rejected","completed"].includes(status)) {
+  if (!["accepted", "rejected", "completed"].includes(status)) {
     throw new ApiError(400, "Invalid status");
   }
 
   if (status === "accepted" && request.donation.status !== "available") {
     throw new ApiError(400, "Donation is no longer available");
+  }
+
+  // Validate driver info for accepted requests
+  if (status === "accepted" && (!driverName || !driverContact)) {
+    throw new ApiError(400, "Driver name and contact are required for accepted requests");
   }
 
   // Update request
@@ -251,10 +256,52 @@ const getAllRequests = asyncHandler(async (req, res) => {
   );
 });
 
+const deleteRequest = asyncHandler(async (req, res) => {
+  const { requestId } = req.params;
+  
+  const request = await PickupRequest.findById(requestId)
+    .populate("donation", "donor")
+    .populate("ngo", "_id");
+  
+  if (!request) {
+    throw new ApiError(404, "Pickup request not found");
+  }
+  
+  // Authorization - admin, NGO who created request, or donation owner can delete
+  const isAuthorized = 
+    req.user.role === "admin" ||
+    request.ngo._id.equals(req.user._id) ||
+    request.donation.donor.equals(req.user._id);
+  
+  if (!isAuthorized) {
+    throw new ApiError(403, "Not authorized to delete this pickup request");
+  }
+  
+  // Don't allow deletion of completed requests
+  if (request.status === "completed") {
+    throw new ApiError(400, "Cannot delete completed pickup requests");
+  }
+  
+  // If request was accepted, make donation available again
+  if (request.status === "accepted") {
+    await FoodDonation.findByIdAndUpdate(
+      request.donation._id,
+      { status: "available" }
+    );
+  }
+  
+  await PickupRequest.findByIdAndDelete(requestId);
+  
+  return res.status(200).json(
+    new ApiResponse(200, null, "Pickup request deleted successfully")
+  );
+});
+
 export {
   createRequest,
   updateRequestStatus,
   updateDeliveryLocation,
   completeRequest,
   getAllRequests,
+  deleteRequest // Add this
 };

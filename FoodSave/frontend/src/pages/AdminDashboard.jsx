@@ -67,27 +67,39 @@ const AdminDashboard = ({ showToast }) => {
   }, [user, authLoading, dataLoaded, showToast]);
 
   const handleDelete = async (type, id) => {
+    // Add confirmation dialog
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete this ${type}? This action cannot be undone.`
+    );
+    
+    if (!confirmDelete) return;
+    
     try {
+      setLoading(true);
+      
       if (type === "user") {
         await api.delete(`/users/${id}`);
         setUsers(users.filter((u) => u._id !== id));
-        showToast("User deleted!", "success");
+        showToast("User deleted successfully!", "success");
       } else if (type === "donation") {
         await api.delete(`/donations/${id}`);
         setDonations(donations.filter((d) => d._id !== id));
-        showToast("Donation deleted!", "success");
+        showToast("Donation deleted successfully!", "success");
       } else if (type === "pickup") {
         await api.delete(`/pickups/${id}`);
         setPickups(pickups.filter((p) => p._id !== id));
-        showToast("Pickup deleted!", "success");
+        showToast("Pickup request deleted successfully!", "success");
       } else if (type === "guideline") {
         await api.delete(`/guidelines/${id}`);
         setGuidelines(guidelines.filter((g) => g._id !== id));
-        showToast("Guideline deleted!", "success");
+        showToast("Guideline deleted successfully!", "success");
       }
     } catch (error) {
       console.error("Delete failed:", error);
-      showToast("Failed to delete item", "error");
+      const errorMessage = error.response?.data?.message || `Failed to delete ${type}`;
+      showToast(errorMessage, "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -631,3 +643,20 @@ const AdminDashboard = ({ showToast }) => {
 };
 
 export default AdminDashboard;
+
+// Enhanced delete button component
+const DeleteButton = ({ onClick, disabled = false }) => (
+  <button
+    onClick={onClick}
+    disabled={disabled}
+    className={`
+      px-3 py-1 rounded-md text-sm font-medium transition-all duration-200
+      ${disabled 
+        ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+        : 'bg-red-500 hover:bg-red-600 text-white hover:shadow-md active:scale-95'
+      }
+    `}
+  >
+    {disabled ? 'Deleting...' : '🗑️ Delete'}
+  </button>
+);

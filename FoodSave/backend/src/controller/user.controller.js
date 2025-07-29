@@ -178,9 +178,24 @@ const updateUser = asyncHandler(async (req, res) => {
 
 // Admin: Delete user
 const deleteUser = asyncHandler(async (req, res) => {
-  if (req.user.role !== "admin") throw new ApiError(403, "Admin only");
+  console.log('Delete user request:', {
+    userId: req.params.id,
+    requestingUser: req.user._id,
+    requestingUserRole: req.user.role
+  });
+  
+  if (req.user.role !== "admin") {
+    console.log('Access denied: User is not admin');
+    throw new ApiError(403, "Admin only");
+  }
+  
   const user = await User.findByIdAndDelete(req.params.id);
-  if (!user) throw new ApiError(404, "User not found");
+  if (!user) {
+    console.log('User not found:', req.params.id);
+    throw new ApiError(404, "User not found");
+  }
+  
+  console.log('User deleted successfully:', req.params.id);
   return res.status(200).json(new ApiResponse(200, null, "User deleted"));
 });
 
@@ -213,6 +228,53 @@ const updatePassword = asyncHandler(async (req, res) => {
   );
 });
 
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user) {
+      throw new ApiError(401, "Invalid refresh token");
+    }
+
+    if (incomingRefreshToken !== user?.refreshToken) {
+      throw new ApiError(401, "Refresh token is expired or used");
+    }
+
+    const { accessToken, refreshToken: newRefreshToken } = await generateTokens(user._id);
+
+    const options = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax"
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken: newRefreshToken },
+          "Access token refreshed"
+        )
+      );
+  } catch (error) {
+    throw new ApiError(401, error?.message || "Invalid refresh token");
+  }
+});
+
 export {
   registerUser,
   loginUser,
@@ -222,5 +284,6 @@ export {
   getUserById,
   updateUser,
   deleteUser,
-  updatePassword
+  updatePassword,
+  refreshAccessToken // Add this
 };

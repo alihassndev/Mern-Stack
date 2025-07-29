@@ -63,6 +63,48 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Add refresh token functionality
+  const refreshToken = async () => {
+    try {
+      const res = await api.post("/users/refresh-token");
+      setUser(res.data.data.user || res.data.data);
+      return res.data;
+    } catch (err) {
+      console.error("Token refresh failed:", err);
+      setUser(null);
+      throw err;
+    }
+  };
+
+  // Update axios interceptor
+  useEffect(() => {
+    const responseInterceptor = api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          try {
+            await refreshToken();
+            return api(originalRequest);
+          } catch (refreshError) {
+            setUser(null);
+            window.location.href = '/signin';
+            return Promise.reject(refreshError);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      api.interceptors.response.eject(responseInterceptor);
+    };
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -72,6 +114,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        refreshToken, // Add this
       }}
     >
       {children}
