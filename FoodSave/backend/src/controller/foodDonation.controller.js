@@ -4,6 +4,67 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
+// const createFoodDonation = asyncHandler(async (req, res) => {
+//   console.log(req.files);
+//   const {
+//     title,
+//     description,
+//     quantity,
+//     category,
+//     expiryDate,
+//     address,
+//     coordinates,
+//     pickupWindow,
+//   } = req.body;
+
+//   // Validate required fields
+//   // if (
+//   //   [title, quantity, category, expiryDate, address, coordinates].some(
+//   //     (field) => !field
+//   //   )
+//   // ) {
+//   //   throw new ApiError(400, "All required fields must be provided");
+//   // }
+
+//   // Image upload handling
+//   // const imageFiles = req.files?.images;
+//   const imageFiles = req.files;
+//   if (!imageFiles || imageFiles.length === 0) {
+//     throw new ApiError(400, "At least one food image is required");
+//   }
+
+//   const imageUrls = [];
+//   for (const file of imageFiles) {
+//     const url = await uploadOnCloudinary(file.path);
+//     if (url) imageUrls.push(url);
+//   }
+
+//   // if (imageUrls.length === 0) {
+//   //   throw new ApiError(500, "Failed to upload images");
+//   // }
+
+//   // Create donation
+//   const donation = await FoodDonation.create({
+//     donor: req.user._id,
+//     title,
+//     description,
+//     quantity,
+//     category,
+//     expiryDate,
+//     images: imageUrls,
+//     location: {
+//       address,
+//       coordinates: JSON.parse(coordinates),
+//     },
+//     pickupWindow: JSON.parse(pickupWindow),
+//     status: "available",
+//   });
+
+//   return res
+//     .status(201)
+//     .json(new ApiResponse(201, donation, "Food donation created successfully"));
+// });
+
 const createFoodDonation = asyncHandler(async (req, res) => {
   const {
     title,
@@ -17,16 +78,12 @@ const createFoodDonation = asyncHandler(async (req, res) => {
   } = req.body;
 
   // Validate required fields
-  if (
-    [title, quantity, category, expiryDate, address, coordinates].some(
-      (field) => !field
-    )
-  ) {
-    throw new ApiError(400, "All required fields must be provided");
-  }
+  // if ([title, quantity, category, expiryDate, address, coordinates].some((field) => !field)) {
+  //   throw new ApiError(400, "All required fields must be provided");
+  // }
 
   // Image upload handling
-  const imageFiles = req.files?.images;
+  const imageFiles = req.files;
   if (!imageFiles || imageFiles.length === 0) {
     throw new ApiError(400, "At least one food image is required");
   }
@@ -37,8 +94,24 @@ const createFoodDonation = asyncHandler(async (req, res) => {
     if (url) imageUrls.push(url);
   }
 
-  if (imageUrls.length === 0) {
-    throw new ApiError(500, "Failed to upload images");
+  // Check if coordinates is provided and is a valid string before parsing
+  let parsedCoordinates = null;
+  if (coordinates) {
+    try {
+      parsedCoordinates = JSON.parse(coordinates);
+    } catch (error) {
+      throw new ApiError(400, "Invalid coordinates format");
+    }
+  }
+
+  // Check if pickupWindow is provided and is a valid string before parsing
+  let parsedPickupWindow = null;
+  if (pickupWindow) {
+    try {
+      parsedPickupWindow = JSON.parse(pickupWindow);
+    } catch (error) {
+      throw new ApiError(400, "Invalid pickup window format");
+    }
   }
 
   // Create donation
@@ -52,9 +125,9 @@ const createFoodDonation = asyncHandler(async (req, res) => {
     images: imageUrls,
     location: {
       address,
-      coordinates: JSON.parse(coordinates),
+      coordinates: parsedCoordinates, // use the parsed coordinates here
     },
-    pickupWindow: JSON.parse(pickupWindow),
+    pickupWindow: parsedPickupWindow, // use the parsed pickup window here
     status: "available",
   });
 
@@ -67,14 +140,26 @@ const createFoodDonation = asyncHandler(async (req, res) => {
 const getDonations = asyncHandler(async (req, res) => {
   const {
     category,
-    status = "available",
+    status,
     minQuantity,
     location,
     radius = 10, // Default 10km radius
   } = req.query;
 
-  // Base query
-  const query = { status };
+  // Base query - if no status specified, show all
+  const query = {};
+  
+  // Handle status filtering
+  if (status) {
+    if (status.includes(',')) {
+      // Multiple statuses: "available,expired"
+      query.status = { $in: status.split(',') };
+    } else {
+      // Single status
+      query.status = status;
+    }
+  }
+  
   if (category) query.category = category;
   if (minQuantity) query.quantity = { $gte: Number(minQuantity) };
 

@@ -9,6 +9,8 @@ import pickupRouter from "./routes/pickup.routes.js";
 import guidelineRouter from "./routes/guideline.routes.js";
 import feedbackRouter from "./routes/feedback.routes.js";
 import reportRouter from "./routes/report.routes.js";
+import dotenv from "dotenv"; // Load dotenv package
+dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
@@ -46,12 +48,12 @@ app.use("/api/v1/reports", reportRouter);
 
 // WebSocket events
 io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
+  console.log(`🔌 User connected: ${socket.id}`);
 
   // Join room for specific pickup tracking
   socket.on("join-pickup-room", (requestId) => {
     socket.join(`pickup_${requestId}`);
-    console.log(`Socket ${socket.id} joined pickup_${requestId}`);
+    console.log(`📍 Socket ${socket.id} joined pickup_${requestId}`);
   });
 
   // Handle location updates from drivers
@@ -60,7 +62,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log(`User disconnected: ${socket.id}`);
+    console.log(`🔌 User disconnected: ${socket.id}`);
   });
 });
 

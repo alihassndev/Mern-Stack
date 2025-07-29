@@ -7,8 +7,12 @@ dotenv.config();
 
 connectDB()
   .then(() => {
-    httpServer.listen(process.env.PORT, () => {
-      console.log(`Server is listening at port: ${process.env.PORT}`);
+    const port = process.env.PORT || 8000;
+    httpServer.listen(port, () => {
+      console.log(`🚀 Server is running on port: ${port}`);
+      console.log(
+        `📊 Database: ${process.env.MONGO_URI ? "Connected" : "Not configured"}`
+      );
     });
   })
-  .catch((err) => console.error("Server error: ", err));
+  .catch((err) => console.error("❌ Server error: ", err));

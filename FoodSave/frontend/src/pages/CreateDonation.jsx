@@ -49,7 +49,7 @@ const CreateDonation = () => {
         }
       }
 
-      await api.post("/foodDonations", data, {
+      await api.post("/donations", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

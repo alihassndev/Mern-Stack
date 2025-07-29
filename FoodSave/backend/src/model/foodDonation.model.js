@@ -7,19 +7,20 @@ const foodDonationSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    title: { type: String, required: true },
+    title: { type: String, required: false },
     description: { type: String },
     quantity: { type: Number, required: true, min: 1 },
     category: {
       type: String,
       enum: ["fruits", "vegetables", "bakery", "meals", "dairy", "other"],
-      required: true,
+      default: "meals",
+      required: false,
     },
     expiryDate: { type: Date, required: true },
     images: [{ type: String }], // Cloudinary URLs
     location: {
-      address: { type: String, required: true },
-      coordinates: { type: [Number], required: true }, // [longitude, latitude]
+      address: { type: String, required: false },
+      coordinates: { type: [Number], required: false }, // [longitude, latitude]
     },
     status: {
       type: String,
@@ -27,8 +28,8 @@ const foodDonationSchema = new mongoose.Schema(
       default: "available",
     },
     pickupWindow: {
-      start: { type: Date, required: true },
-      end: { type: Date, required: true },
+      start: { type: Date, required: false },
+      end: { type: Date, required: false },
     },
   },
   { timestamps: true }

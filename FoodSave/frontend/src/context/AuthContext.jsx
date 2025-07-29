@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import axios from "axios";
+import api from "../utils/axios.js";
 
 const AuthContext = createContext();
 
@@ -12,9 +12,7 @@ export const AuthProvider = ({ children }) => {
     // Check if user is already logged in
     const checkAuthStatus = async () => {
       try {
-        const res = await axios.get("/api/v1/users/me", {
-          withCredentials: true,
-        });
+        const res = await api.get("/users/me");
         setUser(res.data.data);
         // eslint-disable-next-line no-unused-vars
       } catch (err) {
@@ -30,9 +28,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       setLoading(true);
-      const res = await axios.post("/api/v1/users/login", credentials, {
-        withCredentials: true,
-      });
+      const res = await api.post("/users/login", credentials);
       setUser(res.data.data.user);
       setError(null);
       return res.data;
@@ -47,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       setLoading(true);
-      const res = await axios.post("/api/v1/users/register", userData);
+      const res = await api.post("/users/register", userData);
       setError(null);
       return res.data;
     } catch (err) {
@@ -60,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post("/api/v1/users/logout", {}, { withCredentials: true });
+      await api.post("/users/logout");
       setUser(null);
     } catch (err) {
       console.error("Logout error:", err);

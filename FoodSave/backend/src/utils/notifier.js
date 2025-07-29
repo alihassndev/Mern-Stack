@@ -3,10 +3,10 @@ import twilio from "twilio";
 import nodemailer from "nodemailer";
 
 // SMS (Twilio Free Tier - 1,000 SMS/month)
-const twilioClient =
-  process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
-    ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
-    : null;
+const twilioClient ="";
+  // process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
+  //   ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+  //   : null;
 
 // Email (Nodemailer - Free with Gmail)
 const mailTransport = nodemailer.createTransport({

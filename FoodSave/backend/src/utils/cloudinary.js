@@ -14,10 +14,17 @@ const uploadOnCloudinary = async (localFilePath) => {
       resource_type: "auto",
       folder: "foodsave",
     });
-    fs.unlinkSync(localFilePath); // Remove temp file
+    // Remove temp file after successful upload
+    if (fs.existsSync(localFilePath)) {
+      fs.unlinkSync(localFilePath);
+    }
     return response.url;
   } catch (error) {
-    fs.unlinkSync(localFilePath);
+    // Only try to delete if file exists
+    if (fs.existsSync(localFilePath)) {
+      fs.unlinkSync(localFilePath);
+    }
+    console.error('Cloudinary upload error:', error);
     return null;
   }
 };

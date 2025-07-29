@@ -76,7 +76,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax"
   };
 
   return res
@@ -107,7 +108,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax"
   };
 
   return res
@@ -115,6 +117,13 @@ const logoutUser = asyncHandler(async (req, res) => {
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User logged out"));
+});
+
+// Get current user profile - THIS IS THE MISSING ENDPOINT
+const getCurrentUser = asyncHandler(async (req, res) => {
+  return res.status(200).json(
+    new ApiResponse(200, req.user, "Current user fetched successfully")
+  );
 });
 
 // Helper function
@@ -136,7 +145,6 @@ const generateTokens = async (userId) => {
 
 // Admin: Get all users
 const getAllUsers = asyncHandler(async (req, res) => {
-  if (req.user.role !== "admin") throw new ApiError(403, "Admin only");
   const users = await User.find().select("-password -refreshToken");
   return res.status(200).json(new ApiResponse(200, users, "All users fetched"));
 });
@@ -151,12 +159,19 @@ const getUserById = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, user, "User fetched"));
 });
 
-// Admin: Update user
+// Update user (allow users to update their own profile)
 const updateUser = asyncHandler(async (req, res) => {
-  if (req.user.role !== "admin") throw new ApiError(403, "Admin only");
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+  const userId = req.params.id;
+  
+  // Check if user is authorized (admin or the user themselves)
+  if (req.user.role !== "admin" && req.user._id.toString() !== userId) {
+    throw new ApiError(403, "You are not authorized to update this user");
+  }
+  
+  const user = await User.findByIdAndUpdate(userId, req.body, {
     new: true,
   }).select("-password -refreshToken");
+  
   if (!user) throw new ApiError(404, "User not found");
   return res.status(200).json(new ApiResponse(200, user, "User updated"));
 });
@@ -202,6 +217,7 @@ export {
   registerUser,
   loginUser,
   logoutUser,
+  getCurrentUser,
   getAllUsers,
   getUserById,
   updateUser,
