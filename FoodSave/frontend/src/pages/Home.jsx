@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import MapComponent from "../components/MapComponent";
 
 const Home = () => {
   const { user } = useAuth();
@@ -28,6 +29,7 @@ const Home = () => {
               </Link>
             </div>
           )}
+        
         </div>
       </section>
 
@@ -103,6 +105,7 @@ const Home = () => {
               {user.role === "donor" ? "Donate Now" : "Find Donations"}
             </Link>
           )}
+          
         </div>
       </section>
     </div>

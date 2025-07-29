@@ -24,7 +24,7 @@ const foodDonationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["available", "reserved", "collected", "expired"],
+      enum: ["available", "reserved", "collected", "expired","delivered"],
       default: "available",
     },
     pickupWindow: {

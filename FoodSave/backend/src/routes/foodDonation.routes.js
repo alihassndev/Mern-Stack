@@ -5,7 +5,7 @@ import {
   getDonations,
   getDonationById,
   updateDonation,
-  deleteDonation,
+  deleteDonation,updateDonationStatus
 } from "../controller/foodDonation.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -14,7 +14,7 @@ const router = Router();
 router
   .route("/")
   .get(getDonations)
-  .post(verifyJWT, upload.array("images", 5), createFoodDonation);
+  .post(verifyJWT,upload.array("images", 5), createFoodDonation);
 
 router
   .route("/:id")
@@ -22,4 +22,5 @@ router
   .patch(verifyJWT, upload.array("images", 5), updateDonation)
   .delete(verifyJWT, deleteDonation);
 
+  router.route("/status/:id").patch(updateDonationStatus);
 export default router;

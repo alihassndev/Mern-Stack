@@ -458,6 +458,18 @@ const PickupRequests = ({ showToast }) => {
                   </div>
                 </div>
 
+    {pickup.status === "pending" && (
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={() =>
+                        updatePickupStatus(pickup._id, "completed")
+                      }
+                      className="btn btn-primary text-sm"
+                    >
+                      Mark as Completed
+                    </button>
+                  </div>
+                )}
                 {pickup.status === "pending" && (
                   <div className="flex justify-end gap-3">
                     <button

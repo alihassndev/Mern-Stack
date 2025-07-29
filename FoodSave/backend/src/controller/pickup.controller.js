@@ -5,6 +5,7 @@ import { User } from "../model/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { sendNotification } from "../utils/notifier.js";
+import transporter from "../utils/transporter.js";
 
 // NGO creates pickup request
 const createRequest = asyncHandler(async (req, res) => {
@@ -36,11 +37,27 @@ const createRequest = asyncHandler(async (req, res) => {
 
   // Notify donor
   const donor = await User.findById(donation.donor);
+   const emailTo = donor.email;
+
+     const mailOptions = {
+    from: process.env.EMAIL_USER, // Sender address
+    to: emailTo, // Recipient address (donor's email)
+    subject: "New Pickup Request for Your Donation", // Subject line
+    text: `Hello ${donor.username},\n\nA new pickup request has been made for your donation titled '${donation.title}'.\n\nProposed Pickup Time: ${proposedPickupTime}\n\nMessage: ${message}\n\nPlease review the request on the platform.\n\nBest Regards,\nYour Donation Platform`, // Plain text body
+  };
+
   await sendNotification({
     phone: donor.phone,
     email: donor.email,
     message: `New pickup request for your donation: ${donation.title}`,
   });
+
+   try {
+    await transporter.sendMail(mailOptions); // Send the email
+    console.log("Email sent successfully to donor.");
+  } catch (error) {
+    console.error("Error sending email to donor:", error);
+  }
 
   return res
     .status(201)
@@ -64,7 +81,7 @@ const updateRequestStatus = asyncHandler(async (req, res) => {
   // }
 
   // Validate status transition
-  if (!["accepted", "rejected"].includes(status)) {
+  if (!["accepted", "rejected","completed"].includes(status)) {
     throw new ApiError(400, "Invalid status");
   }
 

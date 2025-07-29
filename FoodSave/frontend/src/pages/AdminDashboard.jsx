@@ -266,7 +266,7 @@ const AdminDashboard = ({ showToast }) => {
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    {/* <tbody className="bg-white divide-y divide-gray-200">
                       {users.map((user) => (
                         <tr key={user._id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -315,7 +315,58 @@ const AdminDashboard = ({ showToast }) => {
                           </td>
                         </tr>
                       ))}
-                    </tbody>
+                    </tbody> */}
+                    <tbody className="bg-white divide-y divide-gray-200">
+  {users
+    .filter((user) => user.role !== "admin") // Filter out admin users
+    .map((user) => (
+      <tr key={user._id} className="hover:bg-gray-50">
+        <td className="px-6 py-4 whitespace-nowrap">
+          <div className="flex items-center">
+            <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+              <span className="text-primary-700 font-medium">
+                {user.username?.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="ml-4">
+              <div className="text-sm font-medium text-gray-900">
+                {user.username}
+              </div>
+              <div className="text-sm text-gray-500">{user.phone}</div>
+            </div>
+          </div>
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+          {user.email}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap">
+          <span
+            className={`px-2 py-1 text-xs font-medium rounded-full ${
+              user.role === "admin"
+                ? "bg-purple-100 text-purple-700"
+                : user.role === "ngo"
+                ? "bg-blue-100 text-blue-700"
+                : "bg-green-100 text-green-700"
+            }`}
+          >
+            {user.role}
+          </span>
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {new Date(user.createdAt).toLocaleDateString()}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+          <button
+            onClick={() => handleDelete("user", user._id)}
+            className="text-red-600 hover:text-red-900 transition-colors"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    ))}
+</tbody>
+
                   </table>
                 </div>
               </div>

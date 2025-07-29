@@ -3,6 +3,8 @@ import { FoodDonation } from "../model/foodDonation.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import transporter from "../utils/transporter.js";
+import { User } from "../model/user.model.js";
 
 // const createFoodDonation = asyncHandler(async (req, res) => {
 //   console.log(req.files);
@@ -66,6 +68,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 // });
 
 const createFoodDonation = asyncHandler(async (req, res) => {
+  console.log(req.body);
+
   const {
     title,
     description,
@@ -130,6 +134,23 @@ const createFoodDonation = asyncHandler(async (req, res) => {
     pickupWindow: parsedPickupWindow, // use the parsed pickup window here
     status: "available",
   });
+
+  // Send email to the donor after successful donation creation
+  const donor = await User.findById(req.user._id); // Fetch donor details
+  const emailTo = donor.email; // Get donor's email from the database
+const mailOptions = {
+    from: process.env.EMAIL_USER, // Sender address
+    to: emailTo, // Recipient address (donor's email)
+    subject: "Food Donation Created Successfully", // Subject line
+    text: `Hello ${donor.username},\n\nYour food donation titled '${title}' has been successfully created and is now available for pickup.\n\nThank you for your generous contribution.\n\nBest Regards,\nYour Donation Platform`, // Plain text body
+  };
+
+    try {
+    await transporter.sendMail(mailOptions); // Send the email
+    console.log("Email sent successfully to donor.");
+  } catch (error) {
+    console.error("Error sending email to donor:", error);
+  }
 
   return res
     .status(201)
@@ -246,10 +267,42 @@ const deleteDonation = asyncHandler(async (req, res) => {
   }
 });
 
+// Controller to change the status of the donation
+const updateDonationStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params; // Donation ID from URL params
+  const { status } = req.body; // New status from request body
+  
+  // Validate that the status is one of the allowed values
+  const validStatuses = ["available", "reserved", "collected", "expired","delivered"];
+  if (!validStatuses.includes(status)) {
+    throw new ApiError(400, "Invalid status value");
+  }
+
+  // Find the donation by ID
+  const donation = await FoodDonation.findById(id);
+  if (!donation) {
+    throw new ApiError(404, "Donation not found");
+  }
+
+  // Optionally, check if the current user is the donor before allowing status update
+  // if (!donation.donor.equals(req.user._id)) {
+  //   throw new ApiError(403, "Only the donor can update the status");
+  // }
+
+  // Update the donation status
+  donation.status = status;
+  await donation.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, donation, "Donation status updated successfully"));
+});
+
 export {
   createFoodDonation,
   getDonations,
   getDonationById,
   updateDonation,
   deleteDonation,
+  updateDonationStatus
 };

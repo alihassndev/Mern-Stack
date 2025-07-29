@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/axios";
 import { useAuth } from "../context/AuthContext";
+import MapComponent from "../components/MapComponent";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -30,6 +31,8 @@ const DonationsList = ({ showToast }) => {
   });
   const [pickupTime, setPickupTime] = useState("");
   const [pickupMsg, setPickupMsg] = useState("");
+
+  const [showMap, setShowMap] = useState(false); 
 
   // Filter states
   const [filters, setFilters] = useState({
@@ -103,6 +106,17 @@ const DonationsList = ({ showToast }) => {
     }
   };
 
+
+    const updateStatus = async (donationId, newStatus) => {
+    try {
+      await api.patch(`/donations/status/${donationId}`, { status: newStatus });
+      showToast("Donation status updated to delivered!", "success");
+      fetchDonations(); // Refresh the donations list after status update
+    } catch (err) {
+      showToast("Failed to update donation status", "error");
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case "available":
@@ -120,6 +134,9 @@ const DonationsList = ({ showToast }) => {
 
   const isExpired = (expiryDate) => {
     return new Date(expiryDate) < new Date();
+  };
+   const toggleMap = () => {
+    setShowMap((prevState) => !prevState); // Toggle map visibility
   };
 
   if (loading) {
@@ -462,6 +479,17 @@ const DonationsList = ({ showToast }) => {
                       {donation.status.charAt(0).toUpperCase() +
                         donation.status.slice(1)}
                     </span>
+
+                     <div className="mt-4 space-y-4">
+                    {donation.status == "available"  && (
+                      <button
+                        onClick={() => updateStatus(donation._id, "delivered")}
+                        className="w-full mt-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                      >
+                        Mark as Delivered
+                      </button>
+                    )}
+                  </div>
                   </div>
 
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
@@ -505,6 +533,7 @@ const DonationsList = ({ showToast }) => {
                       Request Pickup
                     </button>
                   )}
+                  <MapComponent/>
                 </div>
               </div>
             ))}
