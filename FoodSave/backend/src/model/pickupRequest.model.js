@@ -24,7 +24,6 @@ const pickupRequestSchema = new mongoose.Schema(
       contact: String,
       vehicleDetails: String,
     },
-    completionTime: Date,
   },
   { timestamps: true }
 );

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import NotificationBell from "../components/NotificationBell";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -16,7 +17,8 @@ const Navbar = () => {
   const navLinks = [
     { path: "/", label: "Home", icon: "🏠" },
     { path: "/donations", label: "Donations", icon: "🍽️" },
-    ...(user?.role === "ngo" ? [{ path: "/pickups", label: "Pickups", icon: "🚚" }] : []),
+    ...(user?.role === "donor" ? [{ path: "/pickups", label: "Pickup Requests", icon: "🚚" }] : []),
+    ...(user?.role === "ngo" ? [{ path: "/pickups", label: "Manage Pickups", icon: "📦" }] : []),
     { path: "/guidelines", label: "Guidelines", icon: "📋" },
   ];
 
@@ -87,6 +89,8 @@ const Navbar = () => {
             <div className="flex items-center space-x-3">
               {user ? (
                 <>
+                  {/* Show NotificationBell only for donors */}
+                  {user.role === 'donor' && <NotificationBell />}
                   <Link
                     to="/profile"
                     className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${

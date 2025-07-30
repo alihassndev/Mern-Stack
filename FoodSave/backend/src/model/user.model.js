@@ -43,20 +43,24 @@ const userSchema = new mongoose.Schema(
       city: String,
       state: String,
       zipCode: String,
-      country: { type: String, default: "India" }
+      country: { type: String, default: "Pakistan" },
     },
     // NGO specific fields
     organizationName: {
       type: String,
-      required: function() { return this.role === 'ngo'; }
+      required: function () {
+        return this.role === "ngo";
+      },
     },
     registrationNumber: {
       type: String,
-      required: function() { return this.role === 'ngo'; }
+      required: function () {
+        return this.role === "ngo";
+      },
     },
     isVerified: {
       type: Boolean,
-      default: false
+      default: false,
     },
     refreshToken: { type: String },
   },

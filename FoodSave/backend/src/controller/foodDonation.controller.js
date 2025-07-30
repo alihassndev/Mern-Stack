@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { FoodDonation } from "../model/foodDonation.model.js";
-import { PickupRequest } from "../model/pickupRequest.model.js"; // Add this line
+import { PickupRequest } from "../model/pickupRequest.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -111,11 +111,10 @@ const createFoodDonation = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, donation, "Food donation created successfully"));
 });
 
-// Add other CRUD operations (get, update, delete) here
 const getDonations = asyncHandler(async (req, res) => {
   const {
-    category,
     status,
+    category,
     minQuantity,
     location,
     radius = 10, // Default 10km radius
@@ -153,9 +152,27 @@ const getDonations = asyncHandler(async (req, res) => {
     .populate("donor", "username email")
     .sort({ createdAt: -1 });
 
+  // Get pickup requests for each donation with driver information
+  const donationsWithPickupInfo = await Promise.all(
+    donations.map(async (donation) => {
+      const pickupRequests = await PickupRequest.find({
+        donation: donation._id,
+        status: { $in: ["pending", "accepted"] },
+      })
+        .populate("ngo", "username email phone")
+        .select("ngo status proposedPickupTime message driver createdAt");
+
+      return {
+        ...donation.toObject(),
+        hasActivePickupRequest: pickupRequests.length > 0,
+        pickupRequests: pickupRequests,
+      };
+    })
+  );
+
   return res
     .status(200)
-    .json(new ApiResponse(200, donations, "Donations retrieved"));
+    .json(new ApiResponse(200, donationsWithPickupInfo, "Donations retrieved"));
 });
 
 const getDonationById = asyncHandler(async (req, res) => {
@@ -245,10 +262,9 @@ const deleteDonation = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Donation deleted successfully"));
 });
 
-// Controller to change the status of the donation
 const updateDonationStatus = asyncHandler(async (req, res) => {
-  const { id } = req.params; // Donation ID from URL params
-  const { status } = req.body; // New status from request body
+  const { id } = req.params;
+  const { status } = req.body;
 
   // Validate that the status is one of the allowed values
   const validStatuses = [
@@ -267,11 +283,6 @@ const updateDonationStatus = asyncHandler(async (req, res) => {
   if (!donation) {
     throw new ApiError(404, "Donation not found");
   }
-
-  // Optionally, check if the current user is the donor before allowing status update
-  // if (!donation.donor.equals(req.user._id)) {
-  //   throw new ApiError(403, "Only the donor can update the status");
-  // }
 
   // Update the donation status
   donation.status = status;
@@ -322,5 +333,5 @@ export {
   updateDonation,
   deleteDonation,
   updateDonationStatus,
-  getDonationStats, // Add this
+  getDonationStats,
 };

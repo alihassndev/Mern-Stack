@@ -9,6 +9,7 @@ import pickupRouter from "./routes/pickup.routes.js";
 import guidelineRouter from "./routes/guideline.routes.js";
 import feedbackRouter from "./routes/feedback.routes.js";
 import reportRouter from "./routes/report.routes.js";
+import notificationRouter from "./routes/notification.routes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -46,6 +47,7 @@ app.use("/api/v1/pickups", pickupRouter);
 app.use("/api/v1/guidelines", guidelineRouter);
 app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/reports", reportRouter);
+app.use("/api/v1/notifications", notificationRouter); // Add this line
 
 // Global error handling middleware (must be after all routes)
 app.use(errorHandler);
@@ -53,6 +55,12 @@ app.use(errorHandler);
 // WebSocket events
 io.on("connection", (socket) => {
   console.log(`🔌 User connected: ${socket.id}`);
+
+  // Join user-specific room for notifications
+  socket.on("join-user-room", (userId) => {
+    socket.join(`user_${userId}`);
+    console.log(`📱 Socket ${socket.id} joined user_${userId}`);
+  });
 
   // Join room for specific pickup tracking
   socket.on("join-pickup-room", (requestId) => {
@@ -69,5 +77,8 @@ io.on("connection", (socket) => {
     console.log(`🔌 User disconnected: ${socket.id}`);
   });
 });
+
+// Make io globally accessible for notifications
+global.io = io;
 
 export { httpServer };
