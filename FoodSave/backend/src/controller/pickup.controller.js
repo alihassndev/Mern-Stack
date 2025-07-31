@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { PickupRequest } from "../model/pickupRequest.model.js";
 import { FoodDonation } from "../model/foodDonation.model.js";
 import { User } from "../model/user.model.js";
+import { Feedback } from "../model/feedback.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { sendNotification } from "../utils/notifier.js";
@@ -311,11 +312,9 @@ const deleteRequest = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Request deleted successfully"));
 });
 
-// Get all requests (with filtering)
+// Get all pickup requests with feedback information
 const getAllRequests = asyncHandler(async (req, res) => {
-  const { status, donationId, ngoId } = req.query;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  const { page = 1, limit = 10, status, donationId, ngoId } = req.query;
   const skip = (page - 1) * limit;
 
   // Build filter object
@@ -342,6 +341,26 @@ const getAllRequests = asyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit);
 
+  // Get feedback information for each request
+  const requestsWithFeedback = await Promise.all(
+    requests.map(async (request) => {
+      const feedback = await Feedback.findOne({
+        pickupRequest: request._id,
+        ngo: request.ngo._id
+      });
+      
+      return {
+        ...request.toObject(),
+        hasFeedback: !!feedback,
+        feedback: feedback ? {
+          rating: feedback.rating,
+          comment: feedback.comment,
+          createdAt: feedback.createdAt
+        } : null
+      };
+    })
+  );
+
   const total = await PickupRequest.countDocuments(filter);
 
   return res
@@ -350,7 +369,7 @@ const getAllRequests = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         {
-          requests,
+          requests: requestsWithFeedback,
           pagination: {
             currentPage: page,
             totalPages: Math.ceil(total / limit),

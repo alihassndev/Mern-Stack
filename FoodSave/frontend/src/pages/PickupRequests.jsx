@@ -91,10 +91,18 @@ const PickupRequests = ({ showToast }) => {
 
   const submitFeedback = async () => {
     try {
-      await api.post(`/pickups/${feedbackModal.pickupId}/feedback`, feedback);
+      // Change the endpoint to use the feedback routes
+      await api.post(`/feedback`, {
+        pickupRequest: feedbackModal.pickupId,
+        rating: feedback.rating,
+        comment: feedback.comment
+      });
       showToast("Feedback submitted successfully!", "success");
       setFeedbackModal({ open: false, pickupId: null });
       setFeedback({ rating: 5, comment: "" });
+      
+      // Refresh the pickup list to update the feedback status
+      fetchPickups();
     } catch (err) {
       console.error("Failed to submit feedback:", err);
       showToast("Failed to submit feedback. Please try again.", "error");
@@ -466,12 +474,25 @@ const PickupRequestCard = ({
 
         {/* NGO feedback for completed requests */}
         {isNGO && pickup.status === "completed" && (
-          <button
-            onClick={() => onSubmitFeedback(pickup._id)}
-            className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-md active:scale-95"
-          >
-            ⭐ Leave Feedback
-          </button>
+          <>
+            {pickup.hasFeedback ? (
+              <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg">
+                <span className="text-gray-600">⭐ Feedback Submitted</span>
+                {pickup.feedback && (
+                  <span className="text-sm text-gray-500">
+                    (Rating: {pickup.feedback.rating}/5)
+                  </span>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => onSubmitFeedback(pickup._id)}
+                className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-md active:scale-95"
+              >
+                ⭐ Leave Feedback
+              </button>
+            )}
+          </>
         )}
       </div>
     </div>
