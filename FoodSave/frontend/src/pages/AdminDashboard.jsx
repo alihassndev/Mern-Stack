@@ -71,12 +71,12 @@ const AdminDashboard = ({ showToast }) => {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete this ${type}? This action cannot be undone.`
     );
-    
+
     if (!confirmDelete) return;
-    
+
     try {
       setLoading(true);
-      
+
       if (type === "user") {
         await api.delete(`/users/${id}`);
         setUsers(users.filter((u) => u._id !== id));
@@ -96,7 +96,8 @@ const AdminDashboard = ({ showToast }) => {
       }
     } catch (error) {
       console.error("Delete failed:", error);
-      const errorMessage = error.response?.data?.message || `Failed to delete ${type}`;
+      const errorMessage =
+        error.response?.data?.message || `Failed to delete ${type}`;
       showToast(errorMessage, "error");
     } finally {
       setLoading(false);
@@ -329,56 +330,57 @@ const AdminDashboard = ({ showToast }) => {
                       ))}
                     </tbody> */}
                     <tbody className="bg-white divide-y divide-gray-200">
-  {users
-    .filter((user) => user.role !== "admin") // Filter out admin users
-    .map((user) => (
-      <tr key={user._id} className="hover:bg-gray-50">
-        <td className="px-6 py-4 whitespace-nowrap">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-              <span className="text-primary-700 font-medium">
-                {user.username?.charAt(0).toUpperCase()}
-              </span>
-            </div>
-            <div className="ml-4">
-              <div className="text-sm font-medium text-gray-900">
-                {user.username}
-              </div>
-              <div className="text-sm text-gray-500">{user.phone}</div>
-            </div>
-          </div>
-        </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-          {user.email}
-        </td>
-        <td className="px-6 py-4 whitespace-nowrap">
-          <span
-            className={`px-2 py-1 text-xs font-medium rounded-full ${
-              user.role === "admin"
-                ? "bg-purple-100 text-purple-700"
-                : user.role === "ngo"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-green-100 text-green-700"
-            }`}
-          >
-            {user.role}
-          </span>
-        </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {new Date(user.createdAt).toLocaleDateString()}
-        </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-          <button
-            onClick={() => handleDelete("user", user._id)}
-            className="text-red-600 hover:text-red-900 transition-colors"
-          >
-            Delete
-          </button>
-        </td>
-      </tr>
-    ))}
-</tbody>
-
+                      {users
+                        .filter((user) => user.role !== "admin") // Filter out admin users
+                        .map((user) => (
+                          <tr key={user._id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                                  <span className="text-primary-700 font-medium">
+                                    {user.username?.charAt(0).toUpperCase()}
+                                  </span>
+                                </div>
+                                <div className="ml-4">
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {user.username}
+                                  </div>
+                                  <div className="text-sm text-gray-500">
+                                    {user.phone}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {user.email}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span
+                                className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                  user.role === "admin"
+                                    ? "bg-purple-100 text-purple-700"
+                                    : user.role === "ngo"
+                                    ? "bg-blue-100 text-blue-700"
+                                    : "bg-green-100 text-green-700"
+                                }`}
+                              >
+                                {user.role}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(user.createdAt).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <button
+                                onClick={() => handleDelete("user", user._id)}
+                                className="text-red-600 hover:text-red-900 transition-colors"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
                   </table>
                 </div>
               </div>
@@ -479,12 +481,6 @@ const AdminDashboard = ({ showToast }) => {
                             ).toLocaleString()}
                           </p>
                         </div>
-                        <button
-                          onClick={() => handleDelete("pickup", pickup._id)}
-                          className="ml-4 text-red-600 hover:text-red-900 transition-colors"
-                        >
-                          Delete
-                        </button>
                       </div>
                     </div>
                   ))}
@@ -651,12 +647,13 @@ const DeleteButton = ({ onClick, disabled = false }) => (
     disabled={disabled}
     className={`
       px-3 py-1 rounded-md text-sm font-medium transition-all duration-200
-      ${disabled 
-        ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-        : 'bg-red-500 hover:bg-red-600 text-white hover:shadow-md active:scale-95'
+      ${
+        disabled
+          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "bg-red-500 hover:bg-red-600 text-white hover:shadow-md active:scale-95"
       }
     `}
   >
-    {disabled ? 'Deleting...' : '🗑️ Delete'}
+    {disabled ? "Deleting..." : "🗑️ Delete"}
   </button>
 );

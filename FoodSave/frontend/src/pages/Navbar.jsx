@@ -213,6 +213,17 @@ const Navbar = () => {
             <div className="pt-3 border-t border-gray-200 space-y-2">
               {user ? (
                 <>
+                  {/* Add Donate Food button for donors in mobile menu */}
+                  {user.role === 'donor' && (
+                    <Link
+                      to="/donations/new"
+                      className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <span>🍽️</span>
+                      <span>Donate Food</span>
+                    </Link>
+                  )}
                   <Link
                     to="/profile"
                     className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${

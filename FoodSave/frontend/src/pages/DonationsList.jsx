@@ -464,17 +464,31 @@ const DonationsList = ({ showToast }) => {
   }
 
   return (
-    <div className="min-h-screen pt-20 px-4 pb-10 bg-gray-50">
+    <div className="min-h-screen pt-24 px-4 pb-10 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Available Food Donations
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover fresh food donations from generous donors in your
-            community. Help reduce food waste while feeding those in need.
-          </p>
+        <div className="flex justify-between items-center text-center mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Available Food Donations
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+              Discover fresh food donations from generous donors in your
+              community. Help reduce food waste while feeding those in need.
+            </p>
+          </div>
+          <div>
+            {/* Add Donate Food button for donors */}
+            {user?.role === "donor" && (
+              <Link
+                to="/donations/new"
+                className="inline-flex items-center px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-md hover:shadow-lg"
+              >
+                <span className="mr-2">🍽️</span>
+                <span>Donate Food</span>
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Search and Filters */}
