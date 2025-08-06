@@ -37,8 +37,10 @@ const Signup = () => {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-semibold mb-6 text-center text-primary-700">Join FoodSave</h2>
-        
+        <h2 className="text-2xl font-semibold mb-6 text-center text-primary-700">
+          Join FoodSave
+        </h2>
+
         {(formError || error) && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
             {formError || error}
@@ -87,7 +89,7 @@ const Signup = () => {
           />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-gray-700 mb-1">I am a:</label>
           <select
             name="role"
@@ -101,16 +103,16 @@ const Signup = () => {
           </select>
         </div>
 
-        <button 
-          type="submit"
-          className="btn btn-primary w-full mb-4"
-        >
+        <button type="submit" className="btn btn-primary w-full mb-4">
           Register
         </button>
 
         <div className="text-center">
           <p className="text-gray-600 mb-2">Already have an account?</p>
-          <Link to="/signin" className="text-primary-600 hover:text-primary-800 font-medium">
+          <Link
+            to="/signin"
+            className="text-primary-600 hover:text-primary-800 font-medium"
+          >
             Login
           </Link>
         </div>

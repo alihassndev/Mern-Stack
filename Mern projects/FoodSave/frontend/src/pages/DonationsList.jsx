@@ -467,7 +467,7 @@ const DonationsList = ({ showToast }) => {
     <div className="min-h-screen pt-24 px-4 pb-10 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center text-center mb-8">
+        <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Available Food Donations

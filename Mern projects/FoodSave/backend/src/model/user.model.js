@@ -45,19 +45,9 @@ const userSchema = new mongoose.Schema(
       zipCode: String,
       country: { type: String, default: "Pakistan" },
     },
-    // NGO specific fields
-    organizationName: {
-      type: String,
-      required: function () {
-        return this.role === "ngo";
-      },
-    },
-    registrationNumber: {
-      type: String,
-      required: function () {
-        return this.role === "ngo";
-      },
-    },
+    // Remove these NGO fields completely:
+    // organizationName: { ... },
+    // registrationNumber: { ... },
     isVerified: {
       type: Boolean,
       default: false,

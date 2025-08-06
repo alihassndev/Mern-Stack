@@ -2,6 +2,7 @@ import { User } from "../model/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import jwt from "jsonwebtoken"; // Add this missing import
 
 const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password, role, DOB } = req.body;
